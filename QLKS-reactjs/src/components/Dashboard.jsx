@@ -7,6 +7,9 @@ import Phong from './Phong';
 import DichVu from './DichVu';
 import KhachHang from './KhachHang';
 import BaoCao from './BaoCao';
+import NhanVien from './NhanVien';
+import LoaiPhong from './LoaiPhong';
+import SuDungDichVu from './SuDungDichVu';
 import './Dashboard.css';
 
 // Icons import
@@ -17,7 +20,10 @@ const menuItems = [
   { icon: <MdHotel size={24} />, label: 'Phòng', path: '/dashboard/phong' },
   { icon: <MdRoomService size={24} />, label: 'Dịch vụ', path: '/dashboard/dichvu' },
   { icon: <BiUser size={24} />, label: 'Khách hàng', path: '/dashboard/khachhang' },
-  { icon: <BiBook size={24} />, label: 'Báo cáo', path: '/dashboard/baocao' }
+  { icon: <BiBook size={24} />, label: 'Báo cáo', path: '/dashboard/baocao' },
+  { icon: <BiUser size={24} />, label: 'Nhân viên', path: '/dashboard/nhanvien' },
+  { icon: <BiBook size={24} />, label: 'Loại phòng', path: '/dashboard/loaiphong' },
+  { icon: <MdRoomService size={24} />, label: 'Sử dụng dịch vụ', path: '/dashboard/sudungdichvu' }
   // Đã xóa mục Thống kê
 ];
 
@@ -203,6 +209,9 @@ const Dashboard = () => {
           <Route path="dichvu" element={<DichVu />} />
           <Route path="khachhang" element={<KhachHang />} />
           <Route path="baocao" element={<BaoCao />} />
+          <Route path="nhanvien" element={<NhanVien />} />
+          <Route path="loaiphong" element={<LoaiPhong />} />
+          <Route path="sudungdichvu" element={<SuDungDichVu />} />
           <Route path="thongke" element={null} />
         </Routes>
       </main>
