@@ -17,7 +17,9 @@ const COLORS = ['#00C49F', '#FF8042', '#FFBB28'];
 
 function Phong() {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
   const [phongs, setPhongs] = useState([]);
+  const [selectedPhong, setSelectedPhong] = useState(null);
   const [roomStats, setRoomStats] = useState({
     available: 0,
     occupied: 0,
@@ -91,7 +93,28 @@ function Phong() {
       sorter: (a, b) => a.tenLoaiPhong.localeCompare(b.tenLoaiPhong),
       // ...other column properties
     },
+    {
+      title: 'Hành động',
+      key: 'action',
+      render: (_, record) => (
+        <Space>
+          <Button onClick={() => setIsModalVisible(true)}>Sửa</Button>
+          <Button onClick={() => { setSelectedPhong(record); setIsStatusModalVisible(true); }}>Trạng thái</Button>
+        </Space>
+      )
+    },
   ];
+
+  const handleUpdateStatus = async (values) => {
+    await apiFetch(`http://localhost:5189/api/Phong/${selectedPhong.maPhong}/trang-thai`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ trangThai: values.trangThai })
+    });
+    message.success('Cập nhật trạng thái phòng thành công!');
+    setIsStatusModalVisible(false);
+    fetchRooms();
+  };
 
   return (
     <div className="phong-container">
@@ -192,6 +215,24 @@ function Phong() {
       </Card>
 
       {/* ... existing modals ... */}
+      <Modal
+        title="Cập nhật trạng thái phòng"
+        open={isStatusModalVisible}
+        onCancel={() => setIsStatusModalVisible(false)}
+        footer={null}
+        destroyOnClose
+      >
+        <Form layout="vertical" onFinish={handleUpdateStatus}>
+          <Form.Item label="Trạng thái" name="trangThai" rules={[{ required: true, message: 'Chọn trạng thái!' }]}> 
+            <Select>
+              <Option value="Trống">Trống</Option>
+              <Option value="Đang sử dụng">Đang sử dụng</Option>
+              <Option value="Bảo trì">Bảo trì</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item> <Button type="primary" htmlType="submit">Cập nhật</Button> </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }

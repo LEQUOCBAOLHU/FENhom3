@@ -18,3 +18,9 @@
   --table-border: #444;
   --table-th-bg: #3a2c1a;
 }
+
+/* SuDungDichVu.css */
+.sudungdichvu-container { padding: 24px; }
+@media (max-width: 600px) {
+  .sudungdichvu-container { padding: 4px; }
+}

@@ -2,21 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, CircularProgress, Alert, Box } from '@mui/material';
 import { apiFetch } from '../auth';
 import './KhachHang.css';
+import { Modal, Form, Input, Button, Select } from 'antd';
+
+const { Option } = Select;
 
 function KhachHang() {
   const [khachHangs, setKhachHangs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchKhachHangs = async () => {
       setLoading(true);
       setError('');
       try {
-        const res = await apiFetch('http://localhost:5189/api/KhachHang/get-all');
+        const res = await apiFetch('http://localhost:5189/api/KhachHang');
         if (!res.ok) throw new Error('Không thể lấy dữ liệu khách hàng');
         const data = await res.json();
-        setKhachHangs(data);
+        setKhachHangs(Array.isArray(data) ? data : []);
       } catch (err) {
         setError(err.message || 'Lỗi không xác định');
       } finally {
@@ -25,6 +29,11 @@ function KhachHang() {
     };
     fetchKhachHangs();
   }, []);
+
+  const handleAddEditKhachHang = (values) => {
+    console.log('Received values from form: ', values);
+    // Gọi API thêm/sửa khách hàng ở đây
+  };
 
   return (
     <div className="khach-hang-container">
@@ -45,7 +54,7 @@ function KhachHang() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {khachHangs.map((kh) => (
+              {Array.isArray(khachHangs) && khachHangs.map((kh) => (
                 <TableRow key={kh.maKh || kh.hoTen} hover>
                   <TableCell>{kh.maKh || ''}</TableCell>
                   <TableCell>{kh.hoTen}</TableCell>
@@ -59,6 +68,35 @@ function KhachHang() {
           </Table>
         </TableContainer>
       )}
+
+      {/* Modal thêm/sửa khách hàng */}
+      <Modal
+        title="Thêm/Sửa Khách Hàng"
+        open={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+      >
+        <Form layout="vertical" onFinish={handleAddEditKhachHang}>
+          <Form.Item label="Họ tên" name="hoTen" rules={[{ required: true, message: 'Vui lòng nhập họ tên' }]}>
+            <Input placeholder="Nhập họ tên" />
+          </Form.Item>
+          <Form.Item label="Quốc tịch" name="quocTich" rules={[{ required: true, message: 'Vui lòng chọn quốc tịch' }]}>
+            <Select placeholder="Chọn quốc tịch">
+              <Option value="Việt Nam">Việt Nam</Option>
+              <Option value="Nước ngoài">Nước ngoài</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="Trạng thái" name="trangThai" rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}>
+            <Select placeholder="Chọn trạng thái">
+              <Option value="Đang ở">Đang ở</Option>
+              <Option value="Đã trả phòng">Đã trả phòng</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">Lưu</Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }

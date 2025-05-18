@@ -18,15 +18,15 @@ namespace QLKS.Controllers
         }
 
         [Authorize(Roles = "NhanVien")]
-        [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        [HttpGet]
+        public IActionResult GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            var loaiPhongs = _loaiPhongRepository.GetAll();
+            var loaiPhongs = _loaiPhongRepository.GetAll(pageNumber, pageSize);
             return Ok(loaiPhongs);
         }
 
         [Authorize(Roles = "NhanVien")]
-        [HttpGet("GetById")]
+        [HttpGet("maLoaiPhong")]
         public IActionResult GetById(int maLoaiPhong)
         {
             var result = _loaiPhongRepository.GetById(maLoaiPhong);
@@ -34,7 +34,7 @@ namespace QLKS.Controllers
         }
 
         [Authorize(Roles = "QuanLy")]
-        [HttpPost("AddLoaiPhong")]
+        [HttpPost]
         public IActionResult AddLoaiPhong([FromBody] LoaiPhongVM loaiPhongVM)
         {
             if (loaiPhongVM == null)
@@ -47,7 +47,7 @@ namespace QLKS.Controllers
         }
 
         [Authorize(Roles = "QuanLy,NhanVien")]
-        [HttpPut("EditLoaiPhong/{maLoaiPhong}")]
+        [HttpPut("{maLoaiPhong}")]
         public IActionResult EditLoaiPhong(int maLoaiPhong, [FromBody] LoaiPhongVM loaiPhongVM)
         {
             if (loaiPhongVM == null)
@@ -60,7 +60,7 @@ namespace QLKS.Controllers
         }
 
         [Authorize(Roles = "QuanLy")]
-        [HttpDelete("DeleteLoaiPhong/{maLoaiPhong}")]
+        [HttpDelete("{maLoaiPhong}")]
         public IActionResult DeleteLoaiPhong(int maLoaiPhong)
         {
             var result = _loaiPhongRepository.DeleteLoaiPhong(maLoaiPhong);

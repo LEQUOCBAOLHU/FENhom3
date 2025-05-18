@@ -21,24 +21,13 @@ namespace QLKS.Controllers
         {
             _repository = repository;
         }
-        [Authorize(Roles = "QuanLy")]
-        [HttpGet("get-all")]
-        public async Task<IActionResult> GetAllAccounts()
+        [Authorize(Roles = "QuanLy,NhanVien")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllAccounts([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
-                var accounts = await _repository.GetAllAccounts();
-                var result = accounts.Select(nv => new Account
-                {
-                    HoTen = nv.HoTen ?? "Không xác định",
-                    MaVaiTro = nv.MaVaiTro,
-                    SoDienThoai = nv.SoDienThoai,
-                    Email = nv.Email,
-                    GioiTinh = nv.GioiTinh,
-                    DiaChi = nv.DiaChi,
-                    NgaySinh = nv.NgaySinh,
-
-                });
+                var result = await _repository.GetAllAccounts(pageNumber, pageSize);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -46,8 +35,9 @@ namespace QLKS.Controllers
                 return StatusCode(500, new { Message = "Lỗi khi lấy danh sách: " + ex.Message });
             }
         }
+
         [Authorize(Roles = "NhanVien")]
-        [HttpGet("get-by-name")]
+        [HttpGet("{hoTen}")]
         public async Task<IActionResult> GetByNameNhanVien([FromQuery] string hoTen)
         {
             try
@@ -71,7 +61,7 @@ namespace QLKS.Controllers
             }
         }
         [Authorize(Roles = "QuanLy")]
-        [HttpPost("add")]
+        [HttpPost]
         public async Task<IActionResult> AddAccount([FromBody] Account model)
         {
             try
@@ -101,7 +91,7 @@ namespace QLKS.Controllers
             }
         }
         [Authorize(Roles = "QuanLy")]
-        [HttpPut("update/{email}")]
+        [HttpPut("{email}")]
         public async Task<IActionResult> UpdateAccount(string email, [FromBody] UpdateAccountDTO model)
         {
             try
@@ -120,7 +110,7 @@ namespace QLKS.Controllers
             }
         }
         [Authorize(Roles = "QuanLy")]
-        [HttpDelete("delete/{email}")]
+        [HttpDelete("{email}")]
         
         public async Task<IActionResult> DeleteAccount(string email)
         {

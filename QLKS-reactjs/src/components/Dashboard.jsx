@@ -10,6 +10,10 @@ import BaoCao from './BaoCao';
 import NhanVien from './NhanVien';
 import LoaiPhong from './LoaiPhong';
 import SuDungDichVu from './SuDungDichVu';
+import Account from './Account';
+import DatPhong from './DatPhong';
+import HoaDon from './HoaDon';
+import ThongKe from './ThongKe';
 import './Dashboard.css';
 
 // Icons import
@@ -23,8 +27,11 @@ const menuItems = [
   { icon: <BiBook size={24} />, label: 'Báo cáo', path: '/dashboard/baocao' },
   { icon: <BiUser size={24} />, label: 'Nhân viên', path: '/dashboard/nhanvien' },
   { icon: <BiBook size={24} />, label: 'Loại phòng', path: '/dashboard/loaiphong' },
-  { icon: <MdRoomService size={24} />, label: 'Sử dụng dịch vụ', path: '/dashboard/sudungdichvu' }
-  // Đã xóa mục Thống kê
+  { icon: <MdRoomService size={24} />, label: 'Sử dụng dịch vụ', path: '/dashboard/sudungdichvu' },
+  { icon: <BiUser size={24} />, label: 'Tài khoản', path: '/dashboard/account' },
+  { icon: <BiBook size={24} />, label: 'Đặt phòng', path: '/dashboard/datphong' },
+  { icon: <BiBook size={24} />, label: 'Hóa đơn', path: '/dashboard/hoadon' },
+  { icon: <BiChart size={24} />, label: 'Thống kê', path: '/dashboard/thongke' }
 ];
 
 const StatCard = ({ icon, label, value, type }) => (
@@ -46,6 +53,26 @@ const Dashboard = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const navigate = useNavigate();
   const { isDarkMode, toggleTheme } = useTheme();
+
+  // Lấy vai trò từ localStorage hoặc context (giả sử backend trả về khi đăng nhập)
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const role = user.vaiTro || user.role || '';
+
+  // Menu cho từng vai trò
+  const menuItemsAdmin = [...menuItems];
+  const menuItemsNhanVien = menuItems.filter(item =>
+    [
+      '/dashboard',
+      '/dashboard/phong',
+      '/dashboard/dichvu',
+      '/dashboard/khachhang',
+      '/dashboard/baocao',
+      '/dashboard/sudungdichvu',
+      '/dashboard/datphong',
+      '/dashboard/hoadon',
+      '/dashboard/thongke'
+    ].includes(item.path)
+  );
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -87,7 +114,7 @@ const Dashboard = () => {
         </div>
 
         <div className="sidebar-menu">
-          {menuItems.map((item, index) => (
+          {(role === 'QuanLy' ? menuItemsAdmin : menuItemsNhanVien).map((item, index) => (
             <motion.div
               key={item.path}
               className="menu-item"
@@ -143,7 +170,8 @@ const Dashboard = () => {
       </motion.div>
 
       {/* Main Content */}
-      <main className={`main-content ${isOpen ? 'sidebar-open' : ''}`}>
+      <main className={`main-content ${isOpen ? 'sidebar-open' : ''}`}
+        style={{maxWidth:'100vw',overflowX:'auto'}}>
         <div className="top-bar">
           <button className="mobile-menu" onClick={toggleSidebar}>
             <BiMenu size={24} />
@@ -212,9 +240,26 @@ const Dashboard = () => {
           <Route path="nhanvien" element={<NhanVien />} />
           <Route path="loaiphong" element={<LoaiPhong />} />
           <Route path="sudungdichvu" element={<SuDungDichVu />} />
-          <Route path="thongke" element={null} />
+          <Route path="account" element={<Account />} />
+          <Route path="datphong" element={<DatPhong />} />
+          <Route path="hoadon" element={<HoaDon />} />
+          <Route path="thongke" element={<ThongKe />} />
         </Routes>
       </main>
+
+      <style>{`
+        @media (max-width: 900px) {
+          .dashboard-container { flex-direction: column; }
+          .sidebar { width: 100vw !important; position:relative; }
+          .main-content { padding: 8px; }
+        }
+        @media (max-width: 600px) {
+          .sidebar { font-size: 14px; }
+          .main-content { padding: 2px; }
+          .stats-grid { grid-template-columns: 1fr !important; }
+          .action-buttons { flex-direction: column; gap: 8px; }
+        }
+      `}</style>
     </div>
   );
 };

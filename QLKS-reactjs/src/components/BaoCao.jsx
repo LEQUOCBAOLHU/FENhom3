@@ -16,7 +16,7 @@ function BaoCao() {
         const res = await apiFetch('http://localhost:5189/api/HoaDon');
         if (!res.ok) throw new Error('Không thể lấy dữ liệu hóa đơn');
         const data = await res.json();
-        setHoaDons(data);
+        setHoaDons(Array.isArray(data) ? data : []);
       } catch (err) {
         setError(err.message || 'Lỗi không xác định');
       } finally {
@@ -46,7 +46,7 @@ function BaoCao() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {hoaDons.map((hd) => (
+              {Array.isArray(hoaDons) && hoaDons.map((hd) => (
                 <TableRow key={hd.maHoaDon} hover className="table-row">
                   <TableCell className="table-cell">{hd.maHoaDon}</TableCell>
                   <TableCell className="table-cell">{hd.tenKhachHang}</TableCell>

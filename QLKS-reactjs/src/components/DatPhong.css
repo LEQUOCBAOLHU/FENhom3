@@ -1,0 +1,5 @@
+/* DatPhong.css */
+.datphong-container { padding: 24px; }
+@media (max-width: 600px) {
+  .datphong-container { padding: 4px; }
+}

@@ -20,57 +20,68 @@ namespace QLKS.Controllers
             _phong = phong;
         }
         [Authorize(Roles = "NhanVien")]
-        [HttpGet("GetAll")]
-
-        public IActionResult GetAll()
+        [HttpGet]
+        public IActionResult GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            var phong = _phong.GetAll();
+            var phong = _phong.GetAll(pageNumber, pageSize);
             return Ok(phong);
         }
-       [Authorize(Roles = "NhanVien")]
-        [HttpGet("GetById")]
+
+
+        [Authorize(Roles = "NhanVien")]
+        [HttpGet("{MaPhong}")]
         public IActionResult GetById(string MaPhong)
         {
             return Ok(_phong.GetById(MaPhong));
         }
+
+
         [Authorize(Roles = "QuanLy")]
-        [HttpPost("AddPhong")]
+        [HttpPost]
         public IActionResult AddPhong(PhongMD phongVM)
         {
             var phong = _phong.AddPhong(phongVM);
             return Ok(phong);
         }
+
+
        [Authorize(Roles = "QuanLy,NhanVien")]
-        [HttpPut("EditPhong/{MaPhong}")]
+        [HttpPut("{MaPhong}")]
         public IActionResult EditPhong(string MaPhong, PhongVM phongVM)
         {
             return Ok(_phong.EditPhong(MaPhong, phongVM));
         }
+
+
         [Authorize(Roles = "QuanLy")]
-        [HttpDelete("DeletePhong/{MaPhong}")]
+        [HttpDelete("{MaPhong}")]
         public IActionResult DeletePhong(string MaPhong)
         {
             return Ok(_phong.DeletePhong(MaPhong));
         }
+
+
         [Authorize(Roles = "NhanVien")]
-        [HttpGet("GetByTrangThai")]
-        public IActionResult GetByTrangThai(string trangThai)
+        [HttpGet("trang-thai/{trangThai}")]
+        public IActionResult GetByTrangThai(string trangThai, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             if (string.IsNullOrEmpty(trangThai))
             {
-                return BadRequest("TrangThai khổng thể bỏ trống");
+                return BadRequest("TrangThai không thể bỏ trống");
             }
 
-            var phongList = _phong.GetByTrangThai(trangThai);
-            if (phongList == null || !phongList.Any())
+            var phongList = _phong.GetByTrangThai(trangThai, pageNumber, pageSize);
+            if (phongList.Phongs == null || !phongList.Phongs.Any())
             {
                 return NotFound("Không tìm thấy phòng nào với trạng thái được chỉ định");
             }
 
             return Ok(phongList);
         }
+
+
         [Authorize(Roles = "NhanVien")]
-        [HttpPut("UpdateTrangThai/{maPhong}")]
+        [HttpPut("{maPhong}/trang-thai")]
         public IActionResult UpdateTrangThai(string maPhong, [FromQuery] string trangThai)
         {
             if (string.IsNullOrEmpty(trangThai))
@@ -81,27 +92,33 @@ namespace QLKS.Controllers
             var result = _phong.UpdateTrangThai(maPhong, trangThai);
             return Ok(result);
         }
+
+
         [Authorize(Roles = "NhanVien")]
-        [HttpGet("GetByLoaiPhong")]
-        public IActionResult GetByLoaiPhong(int maLoaiPhong)
+        [HttpGet("loai-phong/{maLoaiPhong}")]
+        public IActionResult GetByLoaiPhong(int maLoaiPhong, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            var phongList = _phong.GetByLoaiPhong(maLoaiPhong);
-            if (phongList == null || !phongList.Any())
+            var phongList = _phong.GetByLoaiPhong(maLoaiPhong, pageNumber, pageSize);
+            if (phongList.Phongs == null || !phongList.Phongs.Any())
             {
                 return NotFound("Không tìm thấy phòng có mã loại phòng đã nhập");
             }
 
             return Ok(phongList);
         }
+
+
         [Authorize(Roles = "QuanLy,NhanVien")]
-        [HttpGet("GetRoomStatusStatistics")]
+        [HttpGet("thong-ke-trang-thai")]
         public IActionResult GetRoomStatusStatistics()
         {
             var statistics = _phong.GetRoomStatusStatistics();
             return Ok(statistics);
         }
+
+
         [Authorize(Roles = "NhanVien")]
-        [HttpGet("IsRoomAvailable")]
+        [HttpGet("{maPhong}/trang-thai-dat-phong")]
         public IActionResult IsRoomAvailable(string maPhong, DateTime startDate, DateTime endDate)
         {
             if (startDate > endDate)

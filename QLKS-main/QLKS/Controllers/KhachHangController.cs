@@ -17,13 +17,14 @@ namespace QLKS.Controllers
         {
             _khachHangRepository = khachHangRepository;
         }
+
         [Authorize(Roles = "NhanVien")]
-        [HttpGet("get-all")]
-        public async Task<IActionResult> GetAllKhachHang()
+        [HttpGet]
+        public async Task<IActionResult> GetAllKhachHang([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
-                var khachHangs = await _khachHangRepository.GetAllKhachHang();
+                var khachHangs = await _khachHangRepository.GetAllKhachHang(pageNumber, pageSize);
                 return Ok(khachHangs);
             }
             catch (Exception ex)
@@ -31,8 +32,10 @@ namespace QLKS.Controllers
                 return StatusCode(500, new { Message = "Lỗi khi lấy danh sách khách hàng: " + ex.Message });
             }
         }
+
+
         [Authorize(Roles = "NhanVien")]
-        [HttpGet("get-by-name")]
+        [HttpGet("{hoTen}")]
         public async Task<IActionResult> GetKhachHangByName([FromQuery] string hoTen)
         {
             try
@@ -56,7 +59,7 @@ namespace QLKS.Controllers
             }
         }
         [Authorize(Roles = "NhanVien")]
-        [HttpPost("add")]
+        [HttpPost]
         public async Task<IActionResult> AddKhachHang([FromBody] KhachHangVM model)
         {
             try
@@ -74,7 +77,7 @@ namespace QLKS.Controllers
             }
         }
         [Authorize(Roles = "NhanVien")]
-        [HttpPut("update/{hoTen}")]
+        [HttpPut("{hoTen}")]
         public async Task<IActionResult> UpdateKhachHang(string hoTen, [FromBody] KhachHangVM model)
         {
             try
@@ -97,7 +100,7 @@ namespace QLKS.Controllers
             }
         }
         [Authorize(Roles = "QuanLy")]
-        [HttpDelete("delete/{hoTen}")]
+        [HttpDelete("{hoTen}")]
         public async Task<IActionResult> DeleteKhachHang(string hoTen)
         {
             try
