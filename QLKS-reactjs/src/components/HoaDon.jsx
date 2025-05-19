@@ -16,11 +16,13 @@ function HoaDon() {
   const fetchHoaDons = async () => {
     setLoading(true);
     try {
-      let url = `http://localhost:5189/api/HoaDon`;
+      let url = `http://localhost:5189/api/HoaDon?pageNumber=1&pageSize=10`;
       if (search) url = `http://localhost:5189/api/HoaDon/khach-hang/${encodeURIComponent(search)}`;
       const res = await apiFetch(url);
       const data = await res.json();
-      setHoaDons(Array.isArray(data) ? data : (data ? [data] : []));
+      // Nếu backend trả về dạng { hoaDons: [...] } thì lấy data.hoaDons, nếu trả về mảng thì lấy trực tiếp
+      const list = Array.isArray(data) ? data : (data.hoaDons || []);
+      setHoaDons(list);
     } catch (e) {
       setHoaDons([]);
     } finally {

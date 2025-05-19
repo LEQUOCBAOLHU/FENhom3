@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Form, Input, DatePicker, Space, Popconfirm, message } from 'antd';
+import { Table, Button, Modal, Form, Input, DatePicker, Space, Popconfirm, message, Select } from 'antd';
 import { apiFetch } from '../auth';
 import './DatPhong.css';
 
@@ -9,6 +9,7 @@ function DatPhong() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingDatPhong, setEditingDatPhong] = useState(null);
   const [search, setSearch] = useState('');
+  const [newMaDatPhong, setNewMaDatPhong] = useState("");
 
   const fetchDatPhongs = async () => {
     setLoading(true);
@@ -37,9 +38,20 @@ function DatPhong() {
     setIsModalVisible(true);
   };
 
+  const fetchNewMaDatPhong = async () => {
+    try {
+      const res = await apiFetch("http://localhost:5189/api/DatPhong/new-ma-dat-phong");
+      const data = await res.json();
+      setNewMaDatPhong(data.maDatPhong || "");
+    } catch {
+      setNewMaDatPhong("");
+    }
+  };
+
   const showAddModal = () => {
     setEditingDatPhong(null);
     setIsModalVisible(true);
+    fetchNewMaDatPhong();
   };
 
   const handleOk = async (values) => {
@@ -102,14 +114,24 @@ function DatPhong() {
       >
         <Form
           layout="vertical"
-          initialValues={editingDatPhong || {}}
+          initialValues={editingDatPhong || (!editingDatPhong && newMaDatPhong ? { maDatPhong: newMaDatPhong } : {})}
           onFinish={handleOk}
         >
+          <Form.Item label="Mã đặt phòng" name="maDatPhong" rules={[{ required: true, message: 'Mã đặt phòng là bắt buộc!' }]}> 
+            <Input disabled value={editingDatPhong ? editingDatPhong.maDatPhong : newMaDatPhong} />
+          </Form.Item>
           <Form.Item label="Mã phòng" name="maPhong" rules={[{ required: true, message: 'Nhập mã phòng!' }]}> <Input /> </Form.Item>
           <Form.Item label="Tên khách hàng" name="tenKhachHang" rules={[{ required: true, message: 'Nhập tên khách hàng!' }]}> <Input /> </Form.Item>
           <Form.Item label="Ngày nhận phòng" name="ngayNhanPhong" rules={[{ required: true, message: 'Chọn ngày nhận!' }]}> <DatePicker style={{width:'100%'}} /> </Form.Item>
           <Form.Item label="Ngày trả phòng" name="ngayTraPhong" rules={[{ required: true, message: 'Chọn ngày trả!' }]}> <DatePicker style={{width:'100%'}} /> </Form.Item>
-          <Form.Item label="Trạng thái" name="trangThai" rules={[{ required: true, message: 'Chọn trạng thái!' }]}> <Input /> </Form.Item>
+          <Form.Item label="Trạng thái" name="trangThai" rules={[{ required: true, message: 'Chọn trạng thái!' }]}> 
+            <Select placeholder="Chọn trạng thái">
+              <Select.Option value="Đang sử dụng">Đang sử dụng</Select.Option>
+              <Select.Option value="Hủy">Hủy</Select.Option>
+              <Select.Option value="Hoàn thành">Hoàn thành</Select.Option>
+              <Select.Option value="Đã đặt">Đã đặt</Select.Option>
+            </Select>
+          </Form.Item>
           <Form.Item> <Button type="primary" htmlType="submit">Lưu</Button> </Form.Item>
         </Form>
       </Modal>

@@ -17,12 +17,13 @@ function KhachHang() {
       setLoading(true);
       setError('');
       try {
-        const res = await apiFetch('http://localhost:5189/api/KhachHang');
-        if (!res.ok) throw new Error('Không thể lấy dữ liệu khách hàng');
+        const res = await apiFetch('http://localhost:5189/api/KhachHang?pageNumber=1&pageSize=10');
         const data = await res.json();
-        setKhachHangs(Array.isArray(data) ? data : []);
-      } catch (err) {
-        setError(err.message || 'Lỗi không xác định');
+        // Nếu backend trả về dạng { khachHangs: [...] } thì lấy data.khachHangs, nếu trả về mảng thì lấy trực tiếp
+        const list = Array.isArray(data) ? data : (data.khachHangs || []);
+        setKhachHangs(list);
+      } catch (e) {
+        setKhachHangs([]);
       } finally {
         setLoading(false);
       }

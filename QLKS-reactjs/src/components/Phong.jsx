@@ -28,15 +28,24 @@ function Phong() {
 
   const fetchRooms = async () => {
     try {
-      const response = await apiFetch('/api/Phong');
+      const response = await apiFetch('http://localhost:5189/api/Phong?pageNumber=1&pageSize=10');
       if (response.ok) {
         const data = await response.json();
-        setPhongs(data);
+        // Nếu backend trả về dạng { phongs: [...] } thì lấy data.phongs, nếu trả về mảng thì lấy trực tiếp
+        const list = Array.isArray(data) ? data : (data.phongs || []);
+        const mapped = list.map(room => ({
+          ...room,
+          trangThai: room.trangThai || room.tinhTrang || '',
+          tenPhong: room.tenPhong || room.TenPhong || '',
+          maPhong: room.maPhong || room.MaPhong || '',
+          tenLoaiPhong: room.tenLoaiPhong || room.TenLoaiPhong || ''
+        }));
+        setPhongs(mapped);
         // Tính toán thống kê phòng
         const stats = {
-          available: data.filter(room => room.tinhTrang === 'Trống').length,
-          occupied: data.filter(room => room.tinhTrang === 'Đã đặt').length,
-          maintenance: data.filter(room => room.tinhTrang === 'Bảo trì').length
+          available: mapped.filter(room => room.trangThai === 'Trống').length,
+          occupied: mapped.filter(room => room.trangThai === 'Đã đặt').length,
+          maintenance: mapped.filter(room => room.trangThai === 'Bảo trì').length
         };
         setRoomStats(stats);
       }
@@ -61,48 +70,39 @@ function Phong() {
       dataIndex: 'maPhong',
       key: 'maPhong',
       sorter: (a, b) => a.maPhong.localeCompare(b.maPhong),
-      // ...other column properties
     },
     {
       title: 'Tên phòng',
       dataIndex: 'tenPhong',
       key: 'tenPhong',
       sorter: (a, b) => a.tenPhong.localeCompare(b.tenPhong),
-      // ...other column properties
     },
     {
       title: 'Trạng thái',
       dataIndex: 'trangThai',
       key: 'trangThai',
       filters: [
-        { text: 'Trống', value: 'Trống' },
         { text: 'Đang sử dụng', value: 'Đang sử dụng' },
+        { text: 'Đã đặt', value: 'Đã đặt' },
         { text: 'Bảo trì', value: 'Bảo trì' },
+        { text: 'Trống', value: 'Trống' },
       ],
       onFilter: (value, record) => record.trangThai.includes(value),
-      render: (text) => (
-        <Tag color={text === 'Trống' ? 'green' : text === 'Đang sử dụng' ? 'orange' : 'red'}>
-          {text}
-        </Tag>
-      ),
+      render: (text) => {
+        let color = 'default';
+        if (text === 'Đang sử dụng') color = 'red';
+        else if (text === 'Đã đặt') color = 'blue';
+        else if (text === 'bảo trì') color = 'gold';
+        else if (text === 'Trống') color = 'green';
+        return <Tag color={color}>{text}</Tag>;
+      },
     },
     {
       title: 'Loại phòng',
       dataIndex: 'tenLoaiPhong',
       key: 'tenLoaiPhong',
       sorter: (a, b) => a.tenLoaiPhong.localeCompare(b.tenLoaiPhong),
-      // ...other column properties
-    },
-    {
-      title: 'Hành động',
-      key: 'action',
-      render: (_, record) => (
-        <Space>
-          <Button onClick={() => setIsModalVisible(true)}>Sửa</Button>
-          <Button onClick={() => { setSelectedPhong(record); setIsStatusModalVisible(true); }}>Trạng thái</Button>
-        </Space>
-      )
-    },
+    }
   ];
 
   const handleUpdateStatus = async (values) => {

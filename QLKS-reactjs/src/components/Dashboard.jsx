@@ -6,14 +6,13 @@ import { useTheme } from '../contexts/ThemeContext';
 import Phong from './Phong';
 import DichVu from './DichVu';
 import KhachHang from './KhachHang';
-import BaoCao from './BaoCao';
 import NhanVien from './NhanVien';
 import LoaiPhong from './LoaiPhong';
-import SuDungDichVu from './SuDungDichVu';
 import Account from './Account';
 import DatPhong from './DatPhong';
 import HoaDon from './HoaDon';
 import ThongKe from './ThongKe';
+import QuanLyPhong from './QuanLyPhong';
 import './Dashboard.css';
 
 // Icons import
@@ -24,14 +23,13 @@ const menuItems = [
   { icon: <MdHotel size={24} />, label: 'Phòng', path: '/dashboard/phong' },
   { icon: <MdRoomService size={24} />, label: 'Dịch vụ', path: '/dashboard/dichvu' },
   { icon: <BiUser size={24} />, label: 'Khách hàng', path: '/dashboard/khachhang' },
-  { icon: <BiBook size={24} />, label: 'Báo cáo', path: '/dashboard/baocao' },
   { icon: <BiUser size={24} />, label: 'Nhân viên', path: '/dashboard/nhanvien' },
   { icon: <BiBook size={24} />, label: 'Loại phòng', path: '/dashboard/loaiphong' },
-  { icon: <MdRoomService size={24} />, label: 'Sử dụng dịch vụ', path: '/dashboard/sudungdichvu' },
   { icon: <BiUser size={24} />, label: 'Tài khoản', path: '/dashboard/account' },
   { icon: <BiBook size={24} />, label: 'Đặt phòng', path: '/dashboard/datphong' },
   { icon: <BiBook size={24} />, label: 'Hóa đơn', path: '/dashboard/hoadon' },
-  { icon: <BiChart size={24} />, label: 'Thống kê', path: '/dashboard/thongke' }
+  { icon: <BiChart size={24} />, label: 'Thống kê', path: '/dashboard/thongke' },
+  { icon: <BiBook size={24} />, label: 'QL Tất cả phòng', path: '/dashboard/quanlyphong' }
 ];
 
 const StatCard = ({ icon, label, value, type }) => (
@@ -66,8 +64,6 @@ const Dashboard = () => {
       '/dashboard/phong',
       '/dashboard/dichvu',
       '/dashboard/khachhang',
-      '/dashboard/baocao',
-      '/dashboard/sudungdichvu',
       '/dashboard/datphong',
       '/dashboard/hoadon',
       '/dashboard/thongke'
@@ -236,14 +232,13 @@ const Dashboard = () => {
           <Route path="phong" element={<Phong />} />
           <Route path="dichvu" element={<DichVu />} />
           <Route path="khachhang" element={<KhachHang />} />
-          <Route path="baocao" element={<BaoCao />} />
           <Route path="nhanvien" element={<NhanVien />} />
           <Route path="loaiphong" element={<LoaiPhong />} />
-          <Route path="sudungdichvu" element={<SuDungDichVu />} />
           <Route path="account" element={<Account />} />
           <Route path="datphong" element={<DatPhong />} />
           <Route path="hoadon" element={<HoaDon />} />
           <Route path="thongke" element={<ThongKe />} />
+          <Route path="quanlyphong" element={<QuanLyPhong />} />
         </Routes>
       </main>
 
