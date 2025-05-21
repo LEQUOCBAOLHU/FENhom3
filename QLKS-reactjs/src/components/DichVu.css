@@ -314,3 +314,7 @@
     right: 1rem;
   }
 }
+
+[data-theme="dark"] .dich-vu-title {
+  color: #fff !important;
+}

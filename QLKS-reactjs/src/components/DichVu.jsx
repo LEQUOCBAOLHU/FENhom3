@@ -11,15 +11,17 @@ function DichVu() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchDichVus = async () => {
       setLoading(true);
-      setError('');
+      setError("");
       try {
-        const res = await apiFetch('http://localhost:5189/api/DichVu?pageNumber=1&pageSize=10');
+        let url = 'http://localhost:5189/api/DichVu?pageNumber=1&pageSize=10';
+        if (search) url = `http://localhost:5189/api/DichVu/search?query=${encodeURIComponent(search)}`;
+        const res = await apiFetch(url);
         const data = await res.json();
-        // Nếu backend trả về dạng { dichVus: [...] } thì lấy data.dichVus, nếu trả về mảng thì lấy trực tiếp
         const list = Array.isArray(data) ? data : (data.dichVus || []);
         setDichVus(list);
       } catch (e) {
@@ -29,20 +31,37 @@ function DichVu() {
       }
     };
     fetchDichVus();
-  }, []);
+  }, [search]);
 
-  const handleAddEditDichVu = (values) => {
-    console.log('Received values:', values);
-    // Gọi API thêm/sửa dịch vụ ở đây
+  const handleAddEditDichVu = async (values) => {
+    // Khi thêm/sửa dịch vụ, luôn gửi/trả về id (maDichVu) nếu có
+    await apiFetch('http://localhost:5189/api/DichVu', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(values)
+    });
     setIsModalVisible(false);
+    // Làm mới danh sách dịch vụ
+    const res = await apiFetch('http://localhost:5189/api/DichVu?pageNumber=1&pageSize=10');
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data.dichVus || []);
+    setDichVus(list);
   };
 
   return (
     <Box className="dich-vu-container">
       <Typography variant="h5" gutterBottom className="dich-vu-title">Quản lý Dịch vụ</Typography>
-      <Button type="primary" onClick={() => setIsModalVisible(true)} className="add-button">
-        Thêm Dịch Vụ
-      </Button>
+      <div style={{ marginBottom: 16 }}>
+        <Input.Search
+          placeholder="Tìm kiếm dịch vụ theo tên"
+          onSearch={setSearch}
+          allowClear
+          style={{ width: 300 }}
+        />
+        <Button type="primary" onClick={() => setIsModalVisible(true)} style={{ marginLeft: 8 }} className="add-button">
+          Thêm Dịch Vụ
+        </Button>
+      </div>
       {loading && <Box className="loading-container"><CircularProgress /></Box>}
       {error && <Alert severity="error" className="error-alert">{error}</Alert>}
       {!loading && !error && (
@@ -58,8 +77,8 @@ function DichVu() {
             </TableHead>
             <TableBody>
               {Array.isArray(dichVus) && dichVus.map((dv) => (
-                <TableRow key={dv.maDichVu || dv.tenDichVu} hover className="table-row">
-                  <TableCell className="table-cell">{dv.maDichVu || ''}</TableCell>
+                <TableRow key={dv.maDichVu || dv.id || dv.tenDichVu} hover className="table-row">
+                  <TableCell className="table-cell">{dv.maDichVu || dv.id || ''}</TableCell>
                   <TableCell className="table-cell">{dv.tenDichVu}</TableCell>
                   <TableCell className="table-cell">{dv.donGia}</TableCell>
                   <TableCell className="table-cell">{dv.moTa}</TableCell>

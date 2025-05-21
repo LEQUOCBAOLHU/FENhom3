@@ -70,22 +70,17 @@ const clearTokens = async () => {
   });
 };
 
-const refreshToken = async (oldToken, oldRefreshToken) => {
+export const refreshToken = async (oldToken, oldRefreshToken) => {
   if (isRefreshing) {
     throw new Error('Hệ thống đang xử lý. Vui lòng thử lại sau.');
   }
 
   isRefreshing = true;
   try {
-    const refreshResponse = await fetch('http://localhost:5189/api/Auth/refresh-token', {
+    const refreshResponse = await fetch('http://localhost:5189/api/Auth/tokens/refresh', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        Token: oldToken,
-        RefreshToken: oldRefreshToken,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: oldToken, refreshToken: oldRefreshToken })
     });
 
     const responseText = await refreshResponse.text();
@@ -151,3 +146,25 @@ export const apiFetch = async (url, options = {}) => {
 
 export const saveAuthTokens = saveToken;
 export const clearAuthTokens = clearTokens;
+
+// Thêm hàm lưu id nhân viên khi login
+export async function loginAndSaveStaffId(email, password) {
+  const res = await fetch('http://localhost:5189/api/Auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, matKhau: password })
+  });
+  if (!res.ok) throw new Error('Đăng nhập thất bại');
+  const data = await res.json();
+  // Lưu token, refreshToken, id nhân viên (nếu có)
+  await saveToken(data.token, data.refreshToken);
+  if (data.idNhanVien) localStorage.setItem('nhanVienId', data.idNhanVien);
+  return data;
+}
+
+// Đăng nhập bằng token có sẵn (dùng cho test hoặc đăng nhập nhanh)
+export async function loginWithToken(token, refreshToken, userInfo) {
+  await saveToken(token, refreshToken);
+  if (userInfo?.idNhanVien) localStorage.setItem('nhanVienId', userInfo.idNhanVien);
+  if (userInfo?.hoTen) localStorage.setItem('user', JSON.stringify(userInfo));
+}

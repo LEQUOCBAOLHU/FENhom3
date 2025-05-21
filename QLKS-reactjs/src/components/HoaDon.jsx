@@ -13,6 +13,9 @@ function HoaDon() {
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
   const [selectedHoaDon, setSelectedHoaDon] = useState(null);
 
+  // Lấy id nhân viên từ localStorage (sau khi login backend đã trả về)
+  const nhanVienId = localStorage.getItem('nhanVienId');
+
   const fetchHoaDons = async () => {
     setLoading(true);
     try {
@@ -49,18 +52,24 @@ function HoaDon() {
   };
 
   const handleOk = async (values) => {
+    // Khi tạo mới, gửi idNhanVien thay vì tên, không gửi tổng tiền phòng khi update
+    let body = { ...values };
     if (editingHoaDon) {
+      // Không gửi/tính lại tổng tiền phòng khi update
+      delete body.tongTien;
       await apiFetch(`http://localhost:5189/api/HoaDon/${editingHoaDon.maHoaDon}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values)
+        body: JSON.stringify(body)
       });
       message.success('Cập nhật hóa đơn thành công!');
     } else {
+      // Gửi idNhanVien khi tạo mới
+      body.idNhanVien = nhanVienId;
       await apiFetch('http://localhost:5189/api/HoaDon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values)
+        body: JSON.stringify(body)
       });
       message.success('Thêm hóa đơn thành công!');
     }
@@ -90,22 +99,41 @@ function HoaDon() {
     fetchHoaDons();
   };
 
-  const handleExportPDFEmail = async () => {
-    await apiFetch(`http://localhost:5189/api/HoaDon/${selectedHoaDon.maHoaDon}/export-pdf/email`, { method: 'POST' });
-    message.success('Gửi hóa đơn PDF qua email thành công!');
+  const handleExportPDF = async (maHoaDon) => {
+    try {
+      const res = await apiFetch(`http://localhost:5189/api/HoaDon/${maHoaDon}/export-pdf`, { method: 'POST' });
+      if (!res.ok) throw new Error('Xuất PDF thất bại');
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `HoaDon_${maHoaDon}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      message.error('Xuất PDF thất bại!');
+    }
   };
 
-  const handleExportPDF = async (maHoaDon) => {
-    await apiFetch(`http://localhost:5189/api/HoaDon/${maHoaDon}/export-pdf`, { method: 'POST' });
-    message.success('Xuất PDF hóa đơn thành công!');
+  const handleExportPDFEmail = async (maHoaDon) => {
+    try {
+      const res = await apiFetch(`http://localhost:5189/api/HoaDon/${maHoaDon}/export-pdf/email`, { method: 'POST' });
+      if (!res.ok) throw new Error('Gửi email thất bại');
+      message.success('Đã gửi hóa đơn PDF qua email!');
+    } catch (e) {
+      message.error('Gửi email thất bại!');
+    }
   };
 
   const columns = [
     { title: 'Mã hóa đơn', dataIndex: 'maHoaDon', key: 'maHoaDon' },
     { title: 'Khách hàng', dataIndex: 'tenKhachHang', key: 'tenKhachHang' },
-    { title: 'Nhân viên', dataIndex: 'tenNhanVien', key: 'tenNhanVien' },
+    { title: 'Nhân viên', dataIndex: 'idNhanVien', key: 'idNhanVien' },
     { title: 'Ngày lập', dataIndex: 'ngayLap', key: 'ngayLap' },
     { title: 'Tổng tiền', dataIndex: 'tongTien', key: 'tongTien', render: v => v?.toLocaleString('vi-VN') },
+    { title: 'Phụ thu', dataIndex: 'phuThu', key: 'phuThu', render: v => v ? v.toLocaleString('vi-VN') + ' đ' : '' },
+    { title: 'Tiền theo giờ', dataIndex: 'tienTheoGio', key: 'tienTheoGio', render: v => v ? v.toLocaleString('vi-VN') + ' đ' : '' },
+    { title: 'Tiền theo ngày', dataIndex: 'tienTheoNgay', key: 'tienTheoNgay', render: v => v ? v.toLocaleString('vi-VN') + ' đ' : '' },
     { title: 'Phương thức', dataIndex: 'phuongThucThanhToan', key: 'phuongThucThanhToan' },
     { title: 'Trạng thái', dataIndex: 'trangThai', key: 'trangThai' },
     {
@@ -118,9 +146,7 @@ function HoaDon() {
             <Button danger>Xóa</Button>
           </Popconfirm>
           <Button onClick={() => handleExportPDF(record.maHoaDon)}>Xuất PDF</Button>
-          <Button onClick={() => { setSelectedHoaDon(record); setIsStatusModalVisible(true); }}>Trạng thái</Button>
-          <Button onClick={() => { setSelectedHoaDon(record); setIsPaymentModalVisible(true); }}>Phương thức TT</Button>
-          <Button onClick={() => { setSelectedHoaDon(record); handleExportPDFEmail(); }}>Gửi Email</Button>
+          <Button onClick={() => handleExportPDFEmail(record.maHoaDon)}>Gửi PDF Email</Button>
         </Space>
       )
     }

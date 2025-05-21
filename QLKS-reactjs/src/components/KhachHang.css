@@ -369,3 +369,9 @@
     right: 1rem;
   }
 }
+
+[data-theme="dark"] .khach-hang-container h5,
+[data-theme="dark"] .khach-hang-container .MuiTypography-h5,
+[data-theme="dark"] .khach-hang-title {
+  color: #fff !important;
+}

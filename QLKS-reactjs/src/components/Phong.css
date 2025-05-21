@@ -332,3 +332,13 @@
     padding: 1.5rem;
   }
 }
+
+[data-theme="dark"] .page-title {
+  color: #fff !important;
+}
+[data-theme="dark"] .stat-card .ant-statistic-title {
+  color: #fff !important;
+}
+[data-theme="dark"] .stat-card .ant-statistic-content {
+  color: #fff !important;
+}

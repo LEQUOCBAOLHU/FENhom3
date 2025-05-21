@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, CircularProgress, Alert, Box } from '@mui/material';
 import { apiFetch } from '../auth';
 import './KhachHang.css';
-import { Modal, Form, Input, Button, Select } from 'antd';
+import { Modal, Form, Input, Button, Select, message } from 'antd';
 
 const { Option } = Select;
 
@@ -11,6 +11,9 @@ function KhachHang() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // Lấy id nhân viên từ localStorage (sau khi login backend đã trả về)
+  const nhanVienId = localStorage.getItem('nhanVienId');
 
   useEffect(() => {
     const fetchKhachHangs = async () => {
@@ -31,9 +34,21 @@ function KhachHang() {
     fetchKhachHangs();
   }, []);
 
-  const handleAddEditKhachHang = (values) => {
-    console.log('Received values from form: ', values);
-    // Gọi API thêm/sửa khách hàng ở đây
+  const handleAddEditKhachHang = async (values) => {
+    // Khi tạo mới, gửi idNhanVien, không gửi maDatPhong
+    const body = { ...values, idNhanVien: nhanVienId };
+    await apiFetch('http://localhost:5189/api/KhachHang', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    setIsModalVisible(false);
+    // Làm mới danh sách khách hàng
+    const res = await apiFetch('http://localhost:5189/api/KhachHang?pageNumber=1&pageSize=10');
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (data.khachHangs || []);
+    setKhachHangs(list);
+    message.success('Thêm/sửa khách hàng thành công!');
   };
 
   return (
