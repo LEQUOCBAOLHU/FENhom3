@@ -12,6 +12,10 @@ function DatPhong() {
   const [search, setSearch] = useState('');
   const [newMaDatPhong, setNewMaDatPhong] = useState("");
   const [isLoadingMDP, setIsLoadingMDP] = useState(false);
+  const [khachHangs, setKhachHangs] = useState([]);
+  const [loadingKhachHang, setLoadingKhachHang] = useState(false);
+  const [phongs, setPhongs] = useState([]);
+  const [loadingPhong, setLoadingPhong] = useState(false);
   const [form] = Form.useForm();
 
   const fetchDatPhongs = async () => {
@@ -36,8 +40,10 @@ function DatPhong() {
     fetchDatPhongs();
   };
 
-  const showEditModal = (record) => {
+  const showEditModal = async (record) => {
     setEditingDatPhong(record);
+    await fetchKhachHangs();
+    await fetchPhongs();
     setIsModalVisible(true);
   };
 
@@ -62,73 +68,86 @@ function DatPhong() {
     }
   };
 
+  // Lấy danh sách khách hàng còn hiệu lực
+  const fetchKhachHangs = async () => {
+    setLoadingKhachHang(true);
+    try {
+      const res = await apiFetch('http://localhost:5189/api/KhachHang?pageNumber=1&pageSize=100');
+      const data = await res.json();
+      // Lọc khách hàng còn hiệu lực (ví dụ: trangThai !== 'Vô hiệu hóa' hoặc isActive === true tuỳ backend)
+      const list = Array.isArray(data) ? data : (data.khachHangs || []);
+      const filtered = list.filter(kh => !kh.trangThai || kh.trangThai.toLowerCase() !== 'vô hiệu hóa');
+      setKhachHangs(filtered);
+    } catch (e) {
+      setKhachHangs([]);
+    } finally {
+      setLoadingKhachHang(false);
+    }
+  };
+
+  // Lấy danh sách phòng
+  const fetchPhongs = async () => {
+    setLoadingPhong(true);
+    try {
+      const res = await apiFetch('http://localhost:5189/api/Phong?pageNumber=1&pageSize=100');
+      const data = await res.json();
+      const list = Array.isArray(data) ? data : (data.phongs || []);
+      setPhongs(list);
+    } catch (e) {
+      setPhongs([]);
+    } finally {
+      setLoadingPhong(false);
+    }
+  };
+
   const showAddModal = async () => {
     form.resetFields();
     setEditingDatPhong(null);
     // Lấy mã đặt phòng mới trước khi hiển thị form
     await fetchNewMaDatPhong();
+    await fetchKhachHangs();
+    await fetchPhongs();
     setIsModalVisible(true);
   };
 
+  // Thêm hoặc sửa đặt phòng
   const handleOk = async (values) => {
     try {
-      if (!values.maDatPhong && !newMaDatPhong) {
-        message.error('Không có mã đặt phòng!');
-        return;
-      }
-
-      const formData = {
-        maDatPhong: values.maDatPhong || newMaDatPhong,
-        maPhong: values.maPhong,
-        tenKhachHang: values.tenKhachHang,
-        ngayNhanPhong: dayjs(values.ngayNhanPhong).format('YYYY-MM-DD'),
-        ngayTraPhong: dayjs(values.ngayTraPhong).format('YYYY-MM-DD'),
-        trangThai: values.trangThai || 'Đã đặt',
-        soNguoiO: values.soNguoiO || 1
+      // Format ngày nhận và ngày trả về dạng ISO hoặc 'YYYY-MM-DD HH:mm' nếu cần
+      const payloadData = {
+        ...values,
+        ngayNhanPhong: values.ngayNhanPhong ? dayjs(values.ngayNhanPhong).format('YYYY-MM-DD HH:mm') : undefined,
+        ngayTraPhong: values.ngayTraPhong ? dayjs(values.ngayTraPhong).format('YYYY-MM-DD HH:mm') : undefined
       };
-
-      const nhanVienId = localStorage.getItem('nhanVienId');
-      if (nhanVienId) {
-        formData.maNv = parseInt(nhanVienId);
-      }
-
-      console.log('Dữ liệu gửi đi:', formData);
-
       if (editingDatPhong) {
+        // Sửa
         const res = await apiFetch(`http://localhost:5189/api/DatPhong/${editingDatPhong.maDatPhong}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(payloadData)
         });
-        
-        if (!res.ok) {
-          const error = await res.json();
-          throw new Error(error?.message || 'Cập nhật thất bại');
-        }
-        message.success('Cập nhật đặt phòng thành công!');
+        if (!res.ok) throw new Error('Cập nhật thất bại');
+        message.success('Cập nhật thành công!');
       } else {
+        // Thêm mới: gửi đúng payload backend yêu cầu
+        const payload = {
+          DatPhongVMs: [payloadData],
+          MaKhList: values.maKhList || []
+        };
         const res = await apiFetch('http://localhost:5189/api/DatPhong', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            DatPhongVMs: [formData],
-            MaKhList: []
-          })
+          body: JSON.stringify(payload)
         });
-
-        if (!res.ok) {
-          const error = await res.json();
-          throw new Error(error?.message || 'Thêm mới thất bại');
-        }
-        message.success('Thêm đặt phòng thành công!');
+        if (!res.ok) throw new Error('Thêm mới thất bại');
+        message.success('Thêm mới thành công!');
       }
-
       setIsModalVisible(false);
+      setEditingDatPhong(null);
       form.resetFields();
       fetchDatPhongs();
-    } catch (error) {
-      message.error(error.message || 'Có lỗi xảy ra!');
-      console.error('Lỗi khi lưu:', error);
+    } catch (e) {
+      message.error(e.message || 'Có lỗi xảy ra!');
     }
   };
 
@@ -201,23 +220,51 @@ function DatPhong() {
         footer={null}
         destroyOnClose
       >
-        <Spin spinning={isLoadingMDP}>
+        <Spin spinning={isLoadingMDP || loadingKhachHang}>
           <Form
             form={form}
             layout="vertical"
             onFinish={handleOk}
           >
-            <Form.Item
+            {/* <Form.Item
               label="Mã đặt phòng"
               name="maDatPhong"
               rules={[{ required: true, message: 'Mã đặt phòng là bắt buộc!' }]}
             >
               <Input disabled />
+            </Form.Item> */}
+            <Form.Item label="Mã phòng" name="maPhong" rules={[{ required: true, message: 'Chọn mã phòng!' }]}> 
+              <Select
+                placeholder="Chọn phòng"
+                loading={loadingPhong}
+                showSearch
+                optionFilterProp="children"
+                allowClear
+              >
+                {phongs.map(phong => (
+                  <Select.Option key={phong.maPhong} value={phong.maPhong}>{phong.tenPhong} ({phong.maPhong})</Select.Option>
+                ))}
+              </Select>
             </Form.Item>
-            <Form.Item label="Mã phòng" name="maPhong" rules={[{ required: true, message: 'Nhập mã phòng!' }]}> <Input /> </Form.Item>
-            <Form.Item label="Tên khách hàng" name="tenKhachHang" rules={[{ required: true, message: 'Nhập tên khách hàng!' }]}> <Input /> </Form.Item>
-            <Form.Item label="Ngày nhận phòng" name="ngayNhanPhong" rules={[{ required: true, message: 'Chọn ngày nhận!' }]}> <DatePicker style={{width:'100%'}} /> </Form.Item>
-            <Form.Item label="Ngày trả phòng" name="ngayTraPhong" rules={[{ required: true, message: 'Chọn ngày trả!' }]}> <DatePicker style={{width:'100%'}} /> </Form.Item>
+            <Form.Item label="Tên khách hàng" name="tenKhachHang" rules={[{ required: true, message: 'Chọn tên khách hàng!' }]}> 
+              <Select
+                placeholder="Chọn khách hàng"
+                loading={loadingKhachHang}
+                showSearch
+                optionFilterProp="children"
+                allowClear
+              >
+                {khachHangs.map(kh => (
+                  <Select.Option key={kh.maKh} value={kh.hoTen}>{kh.hoTen}</Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Ngày nhận phòng" name="ngayNhanPhong" rules={[{ required: true, message: 'Chọn ngày nhận!' }]}> 
+              <DatePicker style={{width:'100%'}} showTime format="YYYY-MM-DD HH:mm" /> 
+            </Form.Item>
+            <Form.Item label="Ngày trả phòng" name="ngayTraPhong" rules={[{ required: true, message: 'Chọn ngày trả!' }]}> 
+              <DatePicker style={{width:'100%'}} showTime format="YYYY-MM-DD HH:mm" /> 
+            </Form.Item>
             <Form.Item label="Trạng thái" name="trangThai" rules={[{ required: true, message: 'Chọn trạng thái!' }]}> 
               <Select placeholder="Chọn trạng thái">
                 <Select.Option value="Đang sử dụng">Đang sử dụng</Select.Option>
@@ -228,6 +275,20 @@ function DatPhong() {
             </Form.Item>
             <Form.Item label="Số người ở" name="soNguoiO" rules={[{ required: true, type: 'number', min: 1, message: 'Nhập số người ở (>=1)!' }]}> 
               <InputNumber min={1} style={{ width: '100%' }} /> 
+            </Form.Item>
+            <Form.Item label="Khách hàng (nhiều)" name="maKhList">
+              <Select
+                mode="multiple"
+                placeholder="Chọn khách hàng"
+                loading={loadingKhachHang}
+                optionFilterProp="children"
+                showSearch
+                allowClear
+              >
+                {khachHangs.map(kh => (
+                  <Select.Option key={kh.maKh} value={kh.maKh}>{kh.hoTen}</Select.Option>
+                ))}
+              </Select>
             </Form.Item>
             <Form.Item> <Button type="primary" htmlType="submit">Lưu</Button> </Form.Item>
           </Form>
