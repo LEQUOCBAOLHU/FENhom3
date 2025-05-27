@@ -11,7 +11,11 @@ public partial class DatPhong
 
     public int? MaKh { get; set; }
 
+<<<<<<< HEAD
     public string MaPhong { get; set; } = null!;
+=======
+    public string? MaPhong { get; set; }
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
     public DateOnly? NgayDat { get; set; }
 
@@ -37,7 +41,11 @@ public partial class DatPhong
 
     public virtual NhanVien? MaNvNavigation { get; set; }
 
+<<<<<<< HEAD
     public virtual Phong MaPhongNavigation { get; set; } = null!;
+=======
+    public virtual Phong? MaPhongNavigation { get; set; }
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
     public virtual ICollection<SuDungDichVu> SuDungDichVus { get; set; } = new List<SuDungDichVu>();
 }

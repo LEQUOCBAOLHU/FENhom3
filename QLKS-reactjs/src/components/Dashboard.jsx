@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
+=======
+import React, { useState, useEffect } from 'react';
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 import { useNavigate, Link, Routes, Route } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BiMenu, BiSun, BiMoon, BiUser, BiBook, BiChart, BiLogOut, BiHome } from 'react-icons/bi';
@@ -17,6 +21,7 @@ import './Dashboard.css';
 
 // Icons import
 import { MdHotel, MdRoomService } from 'react-icons/md';
+<<<<<<< HEAD
 import HomeUser from './HomeUser';
 import GioiThieuUser from './GioiThieuUser';
 import PhongUser from './PhongUser';
@@ -32,6 +37,8 @@ import BaoCao from './BaoCao';
 import SuDungDichVu from './SuDungDichVu';
 import ChangePassword from './ChangePassword';
 import ForgotPassword from './ForgotPassword';
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
 const menuItems = [
   { icon: <BiHome size={24} />, label: 'Dashboard', path: '/dashboard' },
@@ -44,7 +51,11 @@ const menuItems = [
   { icon: <BiBook size={24} />, label: 'Đặt phòng', path: '/dashboard/datphong' },
   { icon: <BiBook size={24} />, label: 'Hóa đơn', path: '/dashboard/hoadon' },
   { icon: <BiChart size={24} />, label: 'Thống kê', path: '/dashboard/thongke' },
+<<<<<<< HEAD
   { icon: <BiBook size={24} />, label: 'QL Tất cả phòng', path: '/dashboard/quanlyphong', adminOnly: true }
+=======
+  { icon: <BiBook size={24} />, label: 'QL Tất cả phòng', path: '/dashboard/quanlyphong' }
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 ];
 
 const StatCard = ({ icon, label, value, type }) => (
@@ -61,8 +72,14 @@ const StatCard = ({ icon, label, value, type }) => (
   </motion.div>
 );
 
+<<<<<<< HEAD
 function Dashboard() {
   const [isOpen, setIsOpen] = useState(true);
+=======
+const Dashboard = () => {
+  const [isOpen, setIsOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
   const navigate = useNavigate();
   const { isDarkMode, toggleTheme } = useTheme();
 
@@ -84,6 +101,15 @@ function Dashboard() {
     ].includes(item.path)
   );
 
+<<<<<<< HEAD
+=======
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   const handleLogout = () => {
@@ -218,6 +244,7 @@ function Dashboard() {
                   Thao tác nhanh
                 </motion.h2>
                 <div className="action-buttons">
+<<<<<<< HEAD
                   {menuItems.slice(1)
                     .filter(item =>
                       (role === 'QuanLy' || item.path !== '/dashboard/quanlyphong') &&
@@ -251,6 +278,23 @@ function Dashboard() {
                     <MdHotel size={24} />
                     <span>Thêm phòng mới</span>
                   </motion.button>
+=======
+                  {menuItems.slice(1).map((item, index) => (
+                    <motion.button
+                      key={item.path}
+                      className="action-button"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => navigate(item.path)}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.7 + index * 0.1 }}
+                    >
+                      {item.icon}
+                      <span>{item.label}</span>
+                    </motion.button>
+                  ))}
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
                 </div>
               </div>
             </div>
@@ -264,6 +308,7 @@ function Dashboard() {
           <Route path="datphong" element={<DatPhong />} />
           <Route path="hoadon" element={<HoaDon />} />
           <Route path="thongke" element={<ThongKe />} />
+<<<<<<< HEAD
           <Route path="quanlyphong" element={role === 'QuanLy' ? <QuanLyPhong /> : <div>Không có quyền truy cập</div>} />
           <Route path="home-user" element={<HomeUser />} />
           <Route path="gioi-thieu-user" element={<GioiThieuUser />} />
@@ -280,6 +325,9 @@ function Dashboard() {
           <Route path="su-dung-dich-vu" element={<SuDungDichVu />} />
           <Route path="change-password" element={<ChangePassword />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
+=======
+          <Route path="quanlyphong" element={<QuanLyPhong />} />
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         </Routes>
       </main>
 

@@ -27,6 +27,7 @@ namespace QLKS.Controllers
             try
             {
                 var result = await _datPhongRepository.GetAllVMAsync(pageNumber, pageSize);
+<<<<<<< HEAD
                 return Ok(new
                 {
                     message = "Lấy danh sách đặt phòng thành công!",
@@ -40,6 +41,13 @@ namespace QLKS.Controllers
                     message = $"Lỗi server: {ex.Message}",
                     data = (object)null
                 });
+=======
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi server: {ex.Message}");
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
         }
 
@@ -51,6 +59,7 @@ namespace QLKS.Controllers
             {
                 var datPhong = await _datPhongRepository.GetByIdVMAsync(maDatPhong);
                 if (datPhong == null)
+<<<<<<< HEAD
                     return NotFound(new
                     {
                         message = "Đặt phòng không tồn tại.",
@@ -70,6 +79,14 @@ namespace QLKS.Controllers
                     message = $"Lỗi server: {ex.Message}",
                     data = (object)null
                 });
+=======
+                    return NotFound("Đặt phòng không tồn tại.");
+                return Ok(datPhong);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi server: {ex.Message}");
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
         }
 
@@ -78,15 +95,20 @@ namespace QLKS.Controllers
         public async Task<ActionResult> Create([FromBody] CreateDatPhongRequest request)
         {
             if (request == null || request.DatPhongVMs == null || !request.DatPhongVMs.Any())
+<<<<<<< HEAD
                 return BadRequest(new
                 {
                     message = "Danh sách đặt phòng không được để trống.",
                     data = (object)null
                 });
+=======
+                return BadRequest("Danh sách đặt phòng không được để trống.");
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
             try
             {
                 await _datPhongRepository.AddVMAsync(request.DatPhongVMs, request.MaKhList);
+<<<<<<< HEAD
                 return Ok(new
                 {
                     message = "Thêm đặt phòng thành công!",
@@ -108,6 +130,17 @@ namespace QLKS.Controllers
                     message = $"Lỗi server: {ex.Message}",
                     data = (object)null
                 });
+=======
+                return Ok("Thêm đặt phòng thành công");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi server: {ex.Message}");
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
         }
 
@@ -116,15 +149,20 @@ namespace QLKS.Controllers
         public async Task<ActionResult> Update(int maDatPhong, [FromBody] UpdateDatPhongVM datPhongVM)
         {
             if (datPhongVM == null)
+<<<<<<< HEAD
                 return BadRequest(new
                 {
                     message = "Dữ liệu cập nhật không được để trống.",
                     data = (object)null
                 });
+=======
+                return BadRequest("Dữ liệu cập nhật không được để trống.");
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
             try
             {
                 await _datPhongRepository.UpdateVMAsync(maDatPhong, datPhongVM);
+<<<<<<< HEAD
                 return Ok(new
                 {
                     message = "Cập nhật đặt phòng thành công!",
@@ -146,6 +184,17 @@ namespace QLKS.Controllers
                     message = $"Lỗi server: {ex.Message}",
                     data = (object)null
                 });
+=======
+                return Ok("Cập nhật thành công");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi server: {ex.Message}");
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
         }
 
@@ -157,6 +206,7 @@ namespace QLKS.Controllers
             {
                 var result = await _datPhongRepository.DeleteByMaDatPhongAsync(maDatPhong);
                 if (!result)
+<<<<<<< HEAD
                     return NotFound(new
                     {
                         message = "Đặt phòng không tồn tại hoặc đã bị xóa.",
@@ -176,6 +226,14 @@ namespace QLKS.Controllers
                     message = $"Lỗi server: {ex.Message}",
                     data = (object)null
                 });
+=======
+                    return NotFound("Đặt phòng không tồn tại hoặc đã bị xóa.");
+                return Ok("Xóa thành công");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi server: {ex.Message}");
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
         }
 
@@ -184,6 +242,7 @@ namespace QLKS.Controllers
         public async Task<ActionResult> UpdatePhongTrangThai([FromRoute] string maPhong, [FromBody] string trangThai)
         {
             if (string.IsNullOrEmpty(maPhong))
+<<<<<<< HEAD
                 return BadRequest(new
                 {
                     message = "Mã phòng không được để trống.",
@@ -196,10 +255,17 @@ namespace QLKS.Controllers
                     message = "Trạng thái không được để trống.",
                     data = (object)null
                 });
+=======
+                return BadRequest(new { error = "Mã phòng không được để trống." });
+
+            if (string.IsNullOrEmpty(trangThai))
+                return BadRequest(new { error = "Trạng thái không được để trống." });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
             try
             {
                 await _datPhongRepository.UpdateDatPhongTrangThaiByMaPhongAsync(maPhong, trangThai);
+<<<<<<< HEAD
                 return Ok(new
                 {
                     message = $"Cập nhật trạng thái đặt phòng cho phòng {maPhong} thành '{trangThai}' thành công!",
@@ -221,6 +287,17 @@ namespace QLKS.Controllers
                     message = $"Lỗi server: {ex.Message}",
                     data = (object)null
                 });
+=======
+                return Ok(new { message = $"Cập nhật trạng thái đặt phòng cho phòng {maPhong} thành '{trangThai}' thành công" });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = $"Lỗi server: {ex.Message}" });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
         }
     }

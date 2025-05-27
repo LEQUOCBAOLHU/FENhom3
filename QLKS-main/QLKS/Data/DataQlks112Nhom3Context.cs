@@ -69,9 +69,17 @@ public partial class DataQlks112Nhom3Context : DbContext
 
             entity.ToTable("DatPhong", tb =>
                 {
+<<<<<<< HEAD
                     tb.HasTrigger("trg_DatPhong_Insert");
                     tb.HasTrigger("trg_DatPhong_Update");
                     tb.HasTrigger("trg_DatPhong_Update_UpdateChiTietHoaDon");
+=======
+                    tb.HasTrigger("trg_DatPhong_BeforeInsert_CheckPhong");
+                    tb.HasTrigger("trg_DatPhong_Insert");
+                    tb.HasTrigger("trg_DatPhong_Update");
+                    tb.HasTrigger("trg_DatPhong_Update_UpdateChiTietHoaDon");
+                    tb.HasTrigger("trg_Phong_AfterDatPhongChange");
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
                 });
 
             entity.Property(e => e.IsActive).HasDefaultValue(true);
@@ -99,7 +107,10 @@ public partial class DataQlks112Nhom3Context : DbContext
 
             entity.HasOne(d => d.MaPhongNavigation).WithMany(p => p.DatPhongs)
                 .HasForeignKey(d => d.MaPhong)
+<<<<<<< HEAD
                 .OnDelete(DeleteBehavior.ClientSetNull)
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
                 .HasConstraintName("FK__DatPhong__MaPhon__46E78A0C");
         });
 
@@ -118,18 +129,26 @@ public partial class DataQlks112Nhom3Context : DbContext
         {
             entity.HasKey(e => e.MaHoaDon).HasName("PK__HoaDon__835ED13BF1DC4064");
 
+<<<<<<< HEAD
             entity.ToTable("HoaDon", tb =>
                 {
                     tb.HasTrigger("trg_HoaDon_AfterThanhToan_IsActive");
                     tb.HasTrigger("trg_HoaDon_UpdateTongTien");
                 });
+=======
+            entity.ToTable("HoaDon", tb => tb.HasTrigger("trg_HoaDon_AfterThanhToan_IsActive"));
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
             entity.Property(e => e.MaKh).HasColumnName("MaKH");
             entity.Property(e => e.MaNv).HasColumnName("MaNV");
             entity.Property(e => e.NgayLap).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.PhuongThucThanhToan).HasMaxLength(50);
             entity.Property(e => e.TongTien).HasColumnType("decimal(12, 2)");
+<<<<<<< HEAD
             entity.Property(e => e.TrangThai).HasMaxLength(50);
+=======
+            entity.Property(e => e.TrangThai).HasMaxLength(20);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
             entity.HasOne(d => d.MaKhNavigation).WithMany(p => p.HoaDons)
                 .HasForeignKey(d => d.MaKh)
@@ -173,9 +192,12 @@ public partial class DataQlks112Nhom3Context : DbContext
             entity.ToTable("LoaiPhong");
 
             entity.Property(e => e.GiaCoBan).HasColumnType("decimal(12, 2)");
+<<<<<<< HEAD
             entity.Property(e => e.GiaPhongNgay)
                 .HasDefaultValue(0m)
                 .HasColumnType("decimal(10, 2)");
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             entity.Property(e => e.TenLoaiPhong).HasMaxLength(50);
         });
 
@@ -226,12 +248,21 @@ public partial class DataQlks112Nhom3Context : DbContext
 
             entity.ToTable("PhuThu");
 
+<<<<<<< HEAD
             entity.Property(e => e.GiaPhuThuTheoGio)
                 .HasDefaultValue(50000m)
                 .HasColumnType("decimal(18, 2)");
             entity.Property(e => e.GiaPhuThuTheoNgay)
                 .HasDefaultValue(50000m)
                 .HasColumnType("decimal(18, 2)");
+=======
+            entity.Property(e => e.PhuThuNguoiThem)
+                .HasDefaultValue(200000m)
+                .HasColumnType("decimal(12, 2)");
+            entity.Property(e => e.TyLePhuThu)
+                .HasDefaultValue(3m)
+                .HasColumnType("decimal(5, 2)");
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
             entity.HasOne(d => d.MaLoaiPhongNavigation).WithMany(p => p.PhuThus)
                 .HasForeignKey(d => d.MaLoaiPhong)
@@ -247,7 +278,10 @@ public partial class DataQlks112Nhom3Context : DbContext
                     tb.HasTrigger("trg_SuDungDichVu_Insert");
                     tb.HasTrigger("trg_SuDungDichVu_Insert_UpdateChiTietHoaDon");
                     tb.HasTrigger("trg_SuDungDichVu_Update");
+<<<<<<< HEAD
                     tb.HasTrigger("trg_SuDungDichVu_UpdateTongTienPhong");
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
                 });
 
             entity.Property(e => e.IsActive).HasDefaultValue(true);

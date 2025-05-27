@@ -2,18 +2,27 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QLKS.Repository;
+<<<<<<< HEAD
 using System;
 using System.Threading.Tasks;
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
 namespace QLKS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+<<<<<<< HEAD
     [Authorize]
     public class ThongKeController : ControllerBase
     {
         private readonly IThongKeRepository _thongKeRepository;
 
+=======
+    public class ThongKeController : ControllerBase
+    {
+        private readonly IThongKeRepository _thongKeRepository;
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         public ThongKeController(IThongKeRepository thongKeRepository)
         {
             _thongKeRepository = thongKeRepository;
@@ -25,6 +34,7 @@ namespace QLKS.Controllers
         {
             if (ngay == default)
             {
+<<<<<<< HEAD
                 return BadRequest(new
                 {
                     message = "Ngày không được để trống.",
@@ -49,6 +59,13 @@ namespace QLKS.Controllers
                     data = (object)null
                 });
             }
+=======
+                return BadRequest(new { Message = "Ngày không được để trống." });
+            }
+
+            var result = await _thongKeRepository.ThongKeTheoNgay(ngay);
+            return Ok(result);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         }
 
         [Authorize(Roles = "QuanLy")]
@@ -57,6 +74,7 @@ namespace QLKS.Controllers
         {
             if (tuNgay > denNgay)
             {
+<<<<<<< HEAD
                 return BadRequest(new
                 {
                     message = "Ngày bắt đầu không được lớn hơn ngày kết thúc.",
@@ -81,6 +99,13 @@ namespace QLKS.Controllers
                     data = (object)null
                 });
             }
+=======
+                return BadRequest("Ngày bắt đầu không được lớn hơn ngày kết thúc.");
+            }
+
+            var result = await _thongKeRepository.ThongKeTheoKhoangThoiGian(tuNgay, denNgay);
+            return Ok(result);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         }
 
         [Authorize(Roles = "QuanLy")]
@@ -89,6 +114,7 @@ namespace QLKS.Controllers
         {
             if (nam < 2000 || nam > DateTime.Now.Year || thang < 1 || thang > 12)
             {
+<<<<<<< HEAD
                 return BadRequest(new
                 {
                     message = "Năm hoặc tháng không hợp lệ.",
@@ -113,6 +139,13 @@ namespace QLKS.Controllers
                     data = (object)null
                 });
             }
+=======
+                return BadRequest(new { Message = "Năm hoặc tháng không hợp lệ." });
+            }
+
+            var result = await _thongKeRepository.ThongKeTheoThang(nam, thang);
+            return Ok(result);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         }
 
         [Authorize(Roles = "QuanLy")]
@@ -121,6 +154,7 @@ namespace QLKS.Controllers
         {
             if (nam < 2000 || nam > DateTime.Now.Year)
             {
+<<<<<<< HEAD
                 return BadRequest(new
                 {
                     message = "Năm không hợp lệ.",
@@ -148,3 +182,14 @@ namespace QLKS.Controllers
         }
     }
 }
+=======
+                return BadRequest(new { Message = "Năm không hợp lệ." });
+            }
+
+            var result = await _thongKeRepository.ThongKeTheoNam(nam);
+            return Ok(result);
+        }
+    }
+}
+
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c

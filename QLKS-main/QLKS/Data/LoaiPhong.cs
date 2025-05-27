@@ -9,11 +9,17 @@ public partial class LoaiPhong
 
     public string TenLoaiPhong { get; set; } = null!;
 
+<<<<<<< HEAD
     public int SoNguoiToiDa { get; set; }
 
     public decimal GiaCoBan { get; set; }
 
     public decimal? GiaPhongNgay { get; set; }
+=======
+    public decimal GiaCoBan { get; set; }
+
+    public int SoNguoiToiDa { get; set; }
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
     public virtual ICollection<Phong> Phongs { get; set; } = new List<Phong>();
 

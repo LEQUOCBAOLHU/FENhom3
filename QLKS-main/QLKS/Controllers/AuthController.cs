@@ -33,6 +33,7 @@ namespace QLKS.Controllers
             {
                 var existingUser = await _repository.GetNhanVienByEmail(model.Email);
                 if (existingUser == null)
+<<<<<<< HEAD
                     return BadRequest(new
                     {
                         message = "Email chưa được thêm vào hệ thống. Vui lòng dùng API AddAccount trước.",
@@ -52,6 +53,15 @@ namespace QLKS.Controllers
                         message = "Tài khoản đã được đăng ký trước đó.",
                         data = (object)null
                     });
+=======
+                    return BadRequest(new { Message = "Email chưa được thêm vào hệ thống. Vui lòng dùng API AddAccount trước." });
+
+                if (!existingUser.IsActive)
+                    return BadRequest(new { Message = "Tài khoản đã bị vô hiệu hóa, không thể đăng ký." });
+
+                if (existingUser.MatKhau != null && existingUser.MatKhau.Length > 0)
+                    return BadRequest(new { Message = "Tài khoản đã được đăng ký trước đó." });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.MatKhau);
                 byte[] passwordBytes = Encoding.UTF8.GetBytes(hashedPassword);
@@ -63,6 +73,7 @@ namespace QLKS.Controllers
                 };
 
                 var updatedNhanVien = await _repository.Register(nhanVienToUpdate);
+<<<<<<< HEAD
                 return Ok(new
                 {
                     message = "Đăng ký thành công!",
@@ -76,6 +87,13 @@ namespace QLKS.Controllers
                     message = "Lỗi khi đăng ký: " + ex.Message,
                     data = (object)null
                 });
+=======
+                return Ok(new { Message = "Đăng ký thành công!", MaNv = updatedNhanVien.MaNv });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi khi đăng ký: " + ex.Message });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
         }
 
@@ -89,6 +107,7 @@ namespace QLKS.Controllers
                 var existingUser = await _repository.GetNhanVienByEmail(model.Email);
                 if (existingUser != null && !existingUser.IsActive)
                 {
+<<<<<<< HEAD
                     return Unauthorized(new
                     {
                         message = "Tài khoản đã bị vô hiệu hóa.",
@@ -100,17 +119,26 @@ namespace QLKS.Controllers
                     message = "Email hoặc mật khẩu không đúng.",
                     data = (object)null
                 });
+=======
+                    return Unauthorized(new { Message = "Tài khoản đã bị vô hiệu hóa." });
+                }
+                return Unauthorized(new { Message = "Email hoặc mật khẩu không đúng." });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
 
             var response = new AuthResponse
             {
                 Token = token,
                 RefreshToken = refreshToken,
+<<<<<<< HEAD
                 MaNv = nhanVien.MaNv,
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
                 HoTen = nhanVien.HoTen,
                 Email = nhanVien.Email
             };
 
+<<<<<<< HEAD
             return Ok(new
             {
                 message = "Đăng nhập thành công!",
@@ -120,11 +148,19 @@ namespace QLKS.Controllers
 
         [HttpPost("tokens/refresh")]
         [AllowAnonymous]
+=======
+            return Ok(response);
+        }
+
+        [HttpPost("tokens/refresh")]
+        [AllowAnonymous] // Cho phép gọi mà không cần JWT
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDTO model)
         {
             try
             {
                 var (newToken, newRefreshToken) = await _repository.RefreshToken(model.Token, model.RefreshToken);
+<<<<<<< HEAD
                 return Ok(new
                 {
                     message = "Làm mới token thành công!",
@@ -138,6 +174,13 @@ namespace QLKS.Controllers
                     message = ex.Message,
                     data = (object)null
                 });
+=======
+                return Ok(new { Token = newToken, RefreshToken = newRefreshToken });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
         }
 
@@ -149,6 +192,7 @@ namespace QLKS.Controllers
             var success = await _repository.RevokeToken(token);
             if (!success)
             {
+<<<<<<< HEAD
                 return BadRequest(new
                 {
                     message = "Không thể đăng xuất. Token không hợp lệ.",
@@ -161,6 +205,12 @@ namespace QLKS.Controllers
                 message = "Đăng xuất thành công!",
                 data = (object)null
             });
+=======
+                return BadRequest(new { Message = "Không thể đăng xuất. Token không hợp lệ." });
+            }
+
+            return Ok(new { Message = "Đăng xuất thành công!" });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         }
 
         [HttpPost("password/reset")]
@@ -173,6 +223,7 @@ namespace QLKS.Controllers
                 var existingUser = await _repository.GetNhanVienByEmail(model.Email);
                 if (existingUser != null && !existingUser.IsActive)
                 {
+<<<<<<< HEAD
                     return BadRequest(new
                     {
                         message = "Tài khoản đã bị vô hiệu hóa, không thể đặt lại mật khẩu.",
@@ -191,6 +242,14 @@ namespace QLKS.Controllers
                 message = "Mật khẩu mới đã được gửi qua email.",
                 data = (object)null
             });
+=======
+                    return BadRequest(new { Message = "Tài khoản đã bị vô hiệu hóa, không thể đặt lại mật khẩu." });
+                }
+                return BadRequest(new { Message = "Email không tồn tại hoặc không thể tạo mật khẩu mới." });
+            }
+
+            return Ok(new { Message = "Mật khẩu mới đã được gửi qua email." });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         }
 
         [HttpPost("password")]
@@ -203,6 +262,7 @@ namespace QLKS.Controllers
                 var existingUser = await _repository.GetNhanVienByEmail(model.Email);
                 if (existingUser != null && !existingUser.IsActive)
                 {
+<<<<<<< HEAD
                     return Unauthorized(new
                     {
                         message = "Tài khoản đã bị vô hiệu hóa.",
@@ -214,6 +274,11 @@ namespace QLKS.Controllers
                     message = "Email hoặc mật khẩu cũ không đúng.",
                     data = (object)null
                 });
+=======
+                    return Unauthorized(new { Message = "Tài khoản đã bị vô hiệu hóa." });
+                }
+                return Unauthorized(new { Message = "Email hoặc mật khẩu cũ không đúng." });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
 
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
@@ -222,6 +287,7 @@ namespace QLKS.Controllers
             var success = await _repository.UpdatePassword(model.Email, passwordBytes);
             if (!success)
             {
+<<<<<<< HEAD
                 return BadRequest(new
                 {
                     message = "Không thể đổi mật khẩu.",
@@ -237,3 +303,12 @@ namespace QLKS.Controllers
         }
     }
 }
+=======
+                return BadRequest(new { Message = "Không thể đổi mật khẩu." });
+            }
+
+            return Ok(new { Message = "Đổi mật khẩu thành công!" });
+        }
+    }
+}
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c

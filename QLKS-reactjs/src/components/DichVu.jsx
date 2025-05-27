@@ -19,6 +19,7 @@ function DichVu() {
       setError("");
       try {
         let url = 'http://localhost:5189/api/DichVu?pageNumber=1&pageSize=10';
+<<<<<<< HEAD
         if (search) url = `http://localhost:5189/api/DichVu/search?tenDichVu=${encodeURIComponent(search)}`;
         const res = await apiFetch(url);
         const data = await res.json();
@@ -26,6 +27,12 @@ function DichVu() {
         const list = Array.isArray(data)
           ? data
           : (data.data?.dichVus || data.dichVus || data.DichVus || []);
+=======
+        if (search) url = `http://localhost:5189/api/DichVu/search?query=${encodeURIComponent(search)}`;
+        const res = await apiFetch(url);
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : (data.dichVus || []);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         setDichVus(list);
       } catch (e) {
         setDichVus([]);
@@ -37,6 +44,10 @@ function DichVu() {
   }, [search]);
 
   const handleAddEditDichVu = async (values) => {
+<<<<<<< HEAD
+=======
+    // Khi thêm/sửa dịch vụ, luôn gửi/trả về id (maDichVu) nếu có
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
     await apiFetch('http://localhost:5189/api/DichVu', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -46,9 +57,13 @@ function DichVu() {
     // Làm mới danh sách dịch vụ
     const res = await apiFetch('http://localhost:5189/api/DichVu?pageNumber=1&pageSize=10');
     const data = await res.json();
+<<<<<<< HEAD
     const list = Array.isArray(data)
       ? data
       : (data.data?.dichVus || data.dichVus || data.DichVus || []);
+=======
+    const list = Array.isArray(data) ? data : (data.dichVus || []);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
     setDichVus(list);
   };
 

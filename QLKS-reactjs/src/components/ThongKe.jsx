@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import { Card, DatePicker, Button, Space, Statistic, Row, Col, message } from 'antd';
+=======
+import { Card, DatePicker, Button, Space, Table, message } from 'antd';
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 import { apiFetch } from '../auth';
 import './ThongKe.css';
 
 function ThongKe() {
+<<<<<<< HEAD
   const [data, setData] = useState(null);
+=======
+  const [data, setData] = useState([]);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState('ngay');
   const [date, setDate] = useState(null);
@@ -12,6 +20,15 @@ function ThongKe() {
   const [year, setYear] = useState(null);
   const [range, setRange] = useState([]);
 
+<<<<<<< HEAD
+=======
+  const columns = [
+    { title: 'Tên dịch vụ', dataIndex: 'tenDichVu', key: 'tenDichVu' },
+    { title: 'Số lượng', dataIndex: 'soLuong', key: 'soLuong' },
+    { title: 'Doanh thu', dataIndex: 'doanhThu', key: 'doanhThu' },
+  ];
+
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
   const fetchThongKe = async () => {
     setLoading(true);
     let url = '';
@@ -31,9 +48,15 @@ function ThongKe() {
     try {
       const res = await apiFetch(url);
       const resData = await res.json();
+<<<<<<< HEAD
       setData(resData?.data || null);
     } catch (e) {
       setData(null);
+=======
+      setData(Array.isArray(resData) ? resData : []);
+    } catch (e) {
+      setData([]);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
       message.error('Lỗi lấy dữ liệu thống kê!');
     } finally {
       setLoading(false);
@@ -41,6 +64,7 @@ function ThongKe() {
   };
 
   return (
+<<<<<<< HEAD
     <Card title="Thống kê doanh thu" style={{ margin: 24 }}>
       <Space style={{ marginBottom: 16 }}>
         <Button type={type === 'ngay' ? 'primary' : 'default'} onClick={() => setType('ngay')}>Theo ngày</Button>
@@ -68,6 +92,23 @@ function ThongKe() {
           </Col>
         </Row>
       )}
+=======
+    <Card title="Thống kê doanh thu dịch vụ" style={{margin:24}}>
+      <Space style={{marginBottom:16}}>
+        <Button type={type==='ngay'?'primary':'default'} onClick={()=>setType('ngay')}>Theo ngày</Button>
+        <Button type={type==='thang'?'primary':'default'} onClick={()=>setType('thang')}>Theo tháng</Button>
+        <Button type={type==='nam'?'primary':'default'} onClick={()=>setType('nam')}>Theo năm</Button>
+        <Button type={type==='khoang'?'primary':'default'} onClick={()=>setType('khoang')}>Khoảng thời gian</Button>
+      </Space>
+      <Space style={{marginBottom:16}}>
+        {type==='ngay' && <DatePicker onChange={setDate} />}
+        {type==='thang' && <><DatePicker picker="month" onChange={d=>{setMonth(d?.month()+1);setYear(d?.year())}} /></>}
+        {type==='nam' && <DatePicker picker="year" onChange={d=>setYear(d?.year())} />}
+        {type==='khoang' && <DatePicker.RangePicker onChange={setRange} />}
+        <Button type="primary" onClick={fetchThongKe}>Thống kê</Button>
+      </Space>
+      <Table columns={columns} dataSource={data} loading={loading} rowKey={(r,i)=>i} />
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
     </Card>
   );
 }

@@ -4,6 +4,10 @@ import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { saveAuthTokens } from '../auth';
 import './LoginRegister.css';
+<<<<<<< HEAD
+=======
+import Box from '@mui/material/Box';
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -14,6 +18,10 @@ const LoginRegister = () => {
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+<<<<<<< HEAD
+=======
+  const [message, setMessage] = useState('');
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
 
@@ -21,6 +29,10 @@ const LoginRegister = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+<<<<<<< HEAD
+=======
+    setMessage('');
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
     const payload = { Email: email, MatKhau: password };
 
@@ -36,6 +48,7 @@ const LoginRegister = () => {
       const data = await response.json();
 
       if (response.ok) {
+<<<<<<< HEAD
         // Xử lý response dạng { data: { ... } } từ backend
         const userData = data.data || data;
         if (!userData.token || !userData.refreshToken) {
@@ -54,6 +67,20 @@ const LoginRegister = () => {
       }
     } catch (error) {
       setError('Không thể kết nối tới hệ thống. Vui lòng thử lại sau.');
+=======
+        if (!data.token || !data.refreshToken) {
+          throw new Error('Thông tin xác thực không đầy đủ.');
+        }
+        await saveAuthTokens(data.token, data.refreshToken);
+        localStorage.setItem('user', JSON.stringify({ email: data.email, hoTen: data.hoTen }));
+        setMessage('Đăng nhập thành công!');
+        navigate('/Dashboard');
+      } else {
+        setMessage(data.Message || 'Đăng nhập thất bại. Vui lòng kiểm tra email và mật khẩu.');
+      }
+    } catch (error) {
+      setMessage('Không thể kết nối tới hệ thống. Vui lòng thử lại sau.');
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
     } finally {
       setLoading(false);
     }

@@ -26,7 +26,11 @@ builder.Services.AddScoped<IKhachHangRepository, KhachHangRepository>();
 builder.Services.AddScoped<IHoaDonRepository, HoaDonRepository>();
 builder.Services.AddScoped<ILoaiPhongRepository, LoaiPhongRepository>();
 builder.Services.AddScoped<IThongKeRepository, ThongKeRepository>();
+<<<<<<< HEAD
 builder.Services.AddScoped<IPhuThuRepository, PhuThuRepository>();
+=======
+
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
 
 // Cấu hình JWT
@@ -92,8 +96,11 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+<<<<<<< HEAD
         options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
 
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
     });
 
 var app = builder.Build();
@@ -116,4 +123,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
+<<<<<<< HEAD
+=======
+
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 app.Run();

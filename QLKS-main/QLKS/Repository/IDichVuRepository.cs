@@ -37,7 +37,10 @@ namespace QLKS.Repository
                 .Take(pageSize)
                 .Select(dv => new DichVuVM
                 {
+<<<<<<< HEAD
                     MaDichVu = dv.MaDichVu,
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
                     TenDichVu = dv.TenDichVu,
                     DonGia = dv.DonGia,
                     MoTa = dv.MoTa
@@ -61,7 +64,10 @@ namespace QLKS.Repository
                 .Where(dv => dv.TenDichVu.Contains(tenDichVu))
                 .Select(dv => new DichVuVM
                 {
+<<<<<<< HEAD
                     MaDichVu = dv.MaDichVu,
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
                     TenDichVu = dv.TenDichVu,
                     DonGia = dv.DonGia,
                     MoTa = dv.MoTa

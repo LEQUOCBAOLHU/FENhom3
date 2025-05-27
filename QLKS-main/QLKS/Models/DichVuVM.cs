@@ -4,7 +4,10 @@ namespace QLKS.Models
 {
     public class DichVuVM
     {
+<<<<<<< HEAD
         public int MaDichVu { get; set; }
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         public string TenDichVu { get; set; } = null!;
         public decimal DonGia { get; set; }
         public string? MoTa { get; set; }

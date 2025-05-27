@@ -11,6 +11,10 @@ function HoaDon() {
   const [search, setSearch] = useState('');
   const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
+<<<<<<< HEAD
+=======
+  const [selectedHoaDon, setSelectedHoaDon] = useState(null);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
   // Lấy id nhân viên từ localStorage (sau khi login backend đã trả về)
   const nhanVienId = localStorage.getItem('nhanVienId');
@@ -22,10 +26,15 @@ function HoaDon() {
       if (search) url = `http://localhost:5189/api/HoaDon/khach-hang/${encodeURIComponent(search)}`;
       const res = await apiFetch(url);
       const data = await res.json();
+<<<<<<< HEAD
       // Lấy đúng mảng hóa đơn từ backend (dạng phân trang)
       const list = Array.isArray(data)
         ? data
         : (data.data?.hoaDons || data.hoaDons || data.HoaDons || []);
+=======
+      // Nếu backend trả về dạng { hoaDons: [...] } thì lấy data.hoaDons, nếu trả về mảng thì lấy trực tiếp
+      const list = Array.isArray(data) ? data : (data.hoaDons || []);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
       setHoaDons(list);
     } catch (e) {
       setHoaDons([]);
@@ -34,7 +43,11 @@ function HoaDon() {
     }
   };
 
+<<<<<<< HEAD
   useEffect(() => { fetchHoaDons(); }, [search]); // eslint-disable-line
+=======
+  useEffect(() => { fetchHoaDons(); }, [search]);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
   const handleDelete = async (maHoaDon) => {
     await apiFetch(`http://localhost:5189/api/HoaDon/${maHoaDon}`, { method: 'DELETE' });
@@ -78,10 +91,15 @@ function HoaDon() {
     fetchHoaDons();
   };
 
+<<<<<<< HEAD
   // Thay selectedHoaDon thành editingHoaDon cho các hàm cập nhật trạng thái/phương thức thanh toán
   const handleUpdateStatus = async (values) => {
     if (!editingHoaDon) return;
     await apiFetch(`http://localhost:5189/api/HoaDon/${editingHoaDon.maHoaDon}/trang-thai`, {
+=======
+  const handleUpdateStatus = async (values) => {
+    await apiFetch(`http://localhost:5189/api/HoaDon/${selectedHoaDon.maHoaDon}/trang-thai`, {
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ trangThai: values.trangThai })
@@ -92,8 +110,12 @@ function HoaDon() {
   };
 
   const handleUpdatePayment = async (values) => {
+<<<<<<< HEAD
     if (!editingHoaDon) return;
     await apiFetch(`http://localhost:5189/api/HoaDon/${editingHoaDon.maHoaDon}/phuong-thuc-thanh-toan`, {
+=======
+    await apiFetch(`http://localhost:5189/api/HoaDon/${selectedHoaDon.maHoaDon}/phuong-thuc-thanh-toan`, {
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phuongThucThanhToan: values.phuongThucThanhToan })

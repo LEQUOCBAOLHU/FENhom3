@@ -35,7 +35,10 @@
     {
         public string Token { get; set; } = null!;
         public string RefreshToken { get; set; } = null!; // Thêm RefreshToken
+<<<<<<< HEAD
         public int MaNv { get; set; } // Thêm MaNv
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         public string HoTen { get; set; } = null!;
         public string Email { get; set; } = null!;
     }

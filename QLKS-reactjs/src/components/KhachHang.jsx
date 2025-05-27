@@ -22,10 +22,15 @@ function KhachHang() {
       try {
         const res = await apiFetch('http://localhost:5189/api/KhachHang?pageNumber=1&pageSize=10');
         const data = await res.json();
+<<<<<<< HEAD
         // Lấy đúng mảng khách hàng từ backend (dạng phân trang)
         const list = Array.isArray(data)
           ? data
           : (data.data?.khachHangs || data.khachHangs || data.KhachHangs || []);
+=======
+        // Nếu backend trả về dạng { khachHangs: [...] } thì lấy data.khachHangs, nếu trả về mảng thì lấy trực tiếp
+        const list = Array.isArray(data) ? data : (data.khachHangs || []);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         setKhachHangs(list);
       } catch (e) {
         setKhachHangs([]);
@@ -48,9 +53,13 @@ function KhachHang() {
     // Làm mới danh sách khách hàng
     const res = await apiFetch('http://localhost:5189/api/KhachHang?pageNumber=1&pageSize=10');
     const data = await res.json();
+<<<<<<< HEAD
     const list = Array.isArray(data)
       ? data
       : (data.data?.khachHangs || data.khachHangs || data.KhachHangs || []);
+=======
+    const list = Array.isArray(data) ? data : (data.khachHangs || []);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
     setKhachHangs(list);
     message.success('Thêm/sửa khách hàng thành công!');
   };

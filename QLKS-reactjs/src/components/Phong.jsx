@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import {
+<<<<<<< HEAD
   Table, Button, Modal, Form, Select,
   Typography, Card, Row, Col, Statistic, Space, Tag, message, Input
+=======
+  Table, Button, Modal, Form, Input, Select,
+  Typography, Card, Row, Col, Statistic, Space, Tag
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 } from 'antd';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { 
   UserOutlined, KeyOutlined, CheckCircleOutlined,
+<<<<<<< HEAD
   CloseCircleOutlined 
+=======
+  CloseCircleOutlined, LoadingOutlined 
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 } from '@ant-design/icons';
 import './Phong.css';
 import { apiFetch } from '../auth';
@@ -16,21 +25,32 @@ const { Option } = Select;
 const COLORS = ['#00C49F', '#FF8042', '#FFBB28'];
 
 function Phong() {
+<<<<<<< HEAD
   const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
   const [isAddRoomModalVisible, setIsAddRoomModalVisible] = useState(false);
   const [phongs, setPhongs] = useState([]);
+=======
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
+  const [phongs, setPhongs] = useState([]);
+  const [selectedPhong, setSelectedPhong] = useState(null);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
   const [roomStats, setRoomStats] = useState({
     available: 0,
     occupied: 0,
     maintenance: 0
   });
+<<<<<<< HEAD
   const [form] = Form.useForm();
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
   const fetchRooms = async () => {
     try {
       const response = await apiFetch('http://localhost:5189/api/Phong?pageNumber=1&pageSize=10');
       if (response.ok) {
         const data = await response.json();
+<<<<<<< HEAD
         // Nếu backend trả về dạng { data: { phongs: [...] } } thì lấy đúng mảng
         const list = Array.isArray(data)
           ? data
@@ -38,6 +58,13 @@ function Phong() {
         const mapped = list.map(room => ({
           ...room,
           trangThai: room.trangThai || room.TrangThai || '',
+=======
+        // Nếu backend trả về dạng { phongs: [...] } thì lấy data.phongs, nếu trả về mảng thì lấy trực tiếp
+        const list = Array.isArray(data) ? data : (data.phongs || []);
+        const mapped = list.map(room => ({
+          ...room,
+          trangThai: room.trangThai || room.tinhTrang || '',
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
           tenPhong: room.tenPhong || room.TenPhong || '',
           maPhong: room.maPhong || room.MaPhong || '',
           tenLoaiPhong: room.tenLoaiPhong || room.TenLoaiPhong || ''
@@ -46,7 +73,11 @@ function Phong() {
         // Tính toán thống kê phòng
         const stats = {
           available: mapped.filter(room => room.trangThai === 'Trống').length,
+<<<<<<< HEAD
           occupied: mapped.filter(room => room.trangThai === 'Đang sử dụng').length,
+=======
+          occupied: mapped.filter(room => room.trangThai === 'Đã đặt').length,
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
           maintenance: mapped.filter(room => room.trangThai === 'Bảo trì').length
         };
         setRoomStats(stats);
@@ -107,8 +138,13 @@ function Phong() {
     }
   ];
 
+<<<<<<< HEAD
   const handleUpdateStatus = async (values, record) => {
     await apiFetch(`http://localhost:5189/api/Phong/${record.maPhong}/trang-thai`, {
+=======
+  const handleUpdateStatus = async (values) => {
+    await apiFetch(`http://localhost:5189/api/Phong/${selectedPhong.maPhong}/trang-thai`, {
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ trangThai: values.trangThai })
@@ -118,6 +154,7 @@ function Phong() {
     fetchRooms();
   };
 
+<<<<<<< HEAD
   const handleAddRoom = async (values) => {
     try {
       const response = await apiFetch('http://localhost:5189/api/Phong', {
@@ -139,6 +176,8 @@ function Phong() {
     }
   };
 
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
   return (
     <div className="phong-container">
       <Title level={2} className="page-title">Quản lý Phòng</Title>
@@ -215,7 +254,11 @@ function Phong() {
         <Col xs={24} md={12}>
           <Card className="chart-card">
             <Space className="action-buttons">
+<<<<<<< HEAD
               <Button type="primary" onClick={() => setIsAddRoomModalVisible(true)}>
+=======
+              <Button type="primary" onClick={() => setIsModalVisible(true)}>
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
                 Thêm phòng mới
               </Button>
               <Button onClick={fetchRooms}>Làm mới dữ liệu</Button>
@@ -237,7 +280,11 @@ function Phong() {
         />
       </Card>
 
+<<<<<<< HEAD
       {/* Modals */}
+=======
+      {/* ... existing modals ... */}
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
       <Modal
         title="Cập nhật trạng thái phòng"
         open={isStatusModalVisible}
@@ -256,6 +303,7 @@ function Phong() {
           <Form.Item> <Button type="primary" htmlType="submit">Cập nhật</Button> </Form.Item>
         </Form>
       </Modal>
+<<<<<<< HEAD
 
       <Modal
         title="Thêm phòng mới"
@@ -311,6 +359,8 @@ function Phong() {
           </Form.Item>
         </Form>
       </Modal>
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
     </div>
   );
 }

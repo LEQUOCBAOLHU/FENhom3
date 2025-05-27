@@ -25,6 +25,7 @@ namespace QLKS.Controllers
             try
             {
                 var khachHangs = await _khachHangRepository.GetAllKhachHang(pageNumber, pageSize);
+<<<<<<< HEAD
                 return Ok(new
                 {
                     message = "Lấy danh sách khách hàng thành công!",
@@ -41,6 +42,17 @@ namespace QLKS.Controllers
             }
         }
 
+=======
+                return Ok(khachHangs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi khi lấy danh sách khách hàng: " + ex.Message });
+            }
+        }
+
+
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         [Authorize(Roles = "NhanVien")]
         [HttpGet("{hoTen}")]
         public async Task<IActionResult> GetKhachHangByName([FromQuery] string hoTen)
@@ -49,16 +61,21 @@ namespace QLKS.Controllers
             {
                 if (string.IsNullOrEmpty(hoTen))
                 {
+<<<<<<< HEAD
                     return BadRequest(new
                     {
                         message = "Họ tên không được để trống.",
                         data = (object)null
                     });
+=======
+                    return BadRequest(new { Message = "Họ tên không được để trống." });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
                 }
 
                 var khachHangs = await _khachHangRepository.GetKhachHangByName(hoTen);
                 if (khachHangs == null || !khachHangs.Any())
                 {
+<<<<<<< HEAD
                     return NotFound(new
                     {
                         message = "Không tìm thấy khách hàng nào với tên này.",
@@ -82,6 +99,18 @@ namespace QLKS.Controllers
             }
         }
 
+=======
+                    return NotFound(new { Message = "Không tìm thấy khách hàng nào với tên này." });
+                }
+
+                return Ok(khachHangs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi khi tìm khách hàng: " + ex.Message });
+            }
+        }
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         [Authorize(Roles = "NhanVien")]
         [HttpPost]
         public async Task<IActionResult> AddKhachHang([FromBody] KhachHangVM model)
@@ -89,6 +118,7 @@ namespace QLKS.Controllers
             try
             {
                 var khachHangVM = await _khachHangRepository.AddKhachHang(model);
+<<<<<<< HEAD
                 return Ok(new
                 {
                     message = "Thêm khách hàng thành công!",
@@ -113,6 +143,19 @@ namespace QLKS.Controllers
             }
         }
 
+=======
+                return Ok(new { Message = "Thêm khách hàng thành công!", Data = khachHangVM });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi khi thêm khách hàng: " + ex.Message });
+            }
+        }
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         [Authorize(Roles = "NhanVien")]
         [HttpPut("{hoTen}")]
         public async Task<IActionResult> UpdateKhachHang(string hoTen, [FromBody] KhachHangVM model)
@@ -122,6 +165,7 @@ namespace QLKS.Controllers
                 var result = await _khachHangRepository.UpdateKhachHang(hoTen, model);
                 if (!result)
                 {
+<<<<<<< HEAD
                     return NotFound(new
                     {
                         message = "Không tìm thấy khách hàng để cập nhật.",
@@ -153,6 +197,22 @@ namespace QLKS.Controllers
             }
         }
 
+=======
+                    return NotFound(new { Message = "Không tìm thấy khách hàng để cập nhật." });
+                }
+
+                return Ok(new { Message = "Cập nhật khách hàng thành công!" });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi khi cập nhật khách hàng: " + ex.Message });
+            }
+        }
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         [Authorize(Roles = "QuanLy")]
         [HttpDelete("{hoTen}")]
         public async Task<IActionResult> DeleteKhachHang(string hoTen)
@@ -162,6 +222,7 @@ namespace QLKS.Controllers
                 var result = await _khachHangRepository.DeleteKhachHang(hoTen);
                 if (!result)
                 {
+<<<<<<< HEAD
                     return NotFound(new
                     {
                         message = "Không tìm thấy khách hàng để xóa.",
@@ -186,3 +247,17 @@ namespace QLKS.Controllers
         }
     }
 }
+=======
+                    return NotFound(new { Message = "Không tìm thấy khách hàng để xóa." });
+                }
+
+                return Ok(new { Message = "Xóa khách hàng thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi khi xóa khách hàng: " + ex.Message });
+            }
+        }
+    }
+}
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c

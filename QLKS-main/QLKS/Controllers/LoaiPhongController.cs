@@ -2,7 +2,10 @@
 using QLKS.Models;
 using QLKS.Repository;
 using Microsoft.AspNetCore.Authorization;
+<<<<<<< HEAD
 using System.Threading.Tasks;
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
 namespace QLKS.Controllers
 {
@@ -20,6 +23,7 @@ namespace QLKS.Controllers
 
         [Authorize(Roles = "NhanVien")]
         [HttpGet]
+<<<<<<< HEAD
         public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             try
@@ -71,10 +75,25 @@ namespace QLKS.Controllers
                     data = (object)null
                 });
             }
+=======
+        public IActionResult GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            var loaiPhongs = _loaiPhongRepository.GetAll(pageNumber, pageSize);
+            return Ok(loaiPhongs);
+        }
+
+        [Authorize(Roles = "NhanVien")]
+        [HttpGet("maLoaiPhong")]
+        public IActionResult GetById(int maLoaiPhong)
+        {
+            var result = _loaiPhongRepository.GetById(maLoaiPhong);
+            return Ok(result);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         }
 
         [Authorize(Roles = "QuanLy")]
         [HttpPost]
+<<<<<<< HEAD
         public async Task<IActionResult> AddLoaiPhong([FromBody] LoaiPhongVM loaiPhongVM)
         {
             if (loaiPhongVM == null)
@@ -111,10 +130,22 @@ namespace QLKS.Controllers
                     data = (object)null
                 });
             }
+=======
+        public IActionResult AddLoaiPhong([FromBody] LoaiPhongVM loaiPhongVM)
+        {
+            if (loaiPhongVM == null)
+            {
+                return BadRequest("Dữ liệu loại phòng không được để trống");
+            }
+
+            var result = _loaiPhongRepository.AddLoaiPhong(loaiPhongVM);
+            return Ok(result);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         }
 
         [Authorize(Roles = "QuanLy,NhanVien")]
         [HttpPut("{maLoaiPhong}")]
+<<<<<<< HEAD
         public async Task<IActionResult> EditLoaiPhong(int maLoaiPhong, [FromBody] LoaiPhongVM loaiPhongVM)
         {
             if (loaiPhongVM == null)
@@ -160,10 +191,22 @@ namespace QLKS.Controllers
                     data = (object)null
                 });
             }
+=======
+        public IActionResult EditLoaiPhong(int maLoaiPhong, [FromBody] LoaiPhongVM loaiPhongVM)
+        {
+            if (loaiPhongVM == null)
+            {
+                return BadRequest("Dữ liệu loại phòng không được để trống");
+            }
+
+            var result = _loaiPhongRepository.EditLoaiPhong(maLoaiPhong, loaiPhongVM);
+            return Ok(result);
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         }
 
         [Authorize(Roles = "QuanLy")]
         [HttpDelete("{maLoaiPhong}")]
+<<<<<<< HEAD
         public async Task<IActionResult> DeleteLoaiPhong(int maLoaiPhong)
         {
             try
@@ -203,3 +246,12 @@ namespace QLKS.Controllers
         }
     }
 }
+=======
+        public IActionResult DeleteLoaiPhong(int maLoaiPhong)
+        {
+            var result = _loaiPhongRepository.DeleteLoaiPhong(maLoaiPhong);
+            return Ok(result);
+        }
+    }
+}
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c

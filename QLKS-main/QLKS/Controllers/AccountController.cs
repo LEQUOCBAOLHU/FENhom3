@@ -21,7 +21,10 @@ namespace QLKS.Controllers
         {
             _repository = repository;
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         [Authorize(Roles = "QuanLy")]
         [HttpGet]
         public async Task<IActionResult> GetAllAccounts([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
@@ -29,6 +32,7 @@ namespace QLKS.Controllers
             try
             {
                 var result = await _repository.GetAllAccounts(pageNumber, pageSize);
+<<<<<<< HEAD
                 return Ok(new
                 {
                     message = "Lấy danh sách tài khoản thành công!",
@@ -42,15 +46,27 @@ namespace QLKS.Controllers
                     message = "Lỗi khi lấy danh sách: " + ex.Message,
                     data = (object)null
                 });
+=======
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi khi lấy danh sách: " + ex.Message });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
         }
 
         [Authorize(Roles = "QuanLy")]
+<<<<<<< HEAD
         [HttpGet("by-name")]
+=======
+        [HttpGet("{hoTen}")]
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         public async Task<IActionResult> GetByNameNhanVien([FromQuery] string hoTen)
         {
             try
             {
+<<<<<<< HEAD
                 if (string.IsNullOrEmpty(hoTen))
                 {
                     return BadRequest(new
@@ -60,6 +76,8 @@ namespace QLKS.Controllers
                     });
                 }
 
+=======
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
                 var accounts = await _repository.GetByNameNhanVien(hoTen);
                 var result = accounts.Select(nv => new Account
                 {
@@ -70,6 +88,7 @@ namespace QLKS.Controllers
                     GioiTinh = nv.GioiTinh,
                     DiaChi = nv.DiaChi,
                     NgaySinh = nv.NgaySinh
+<<<<<<< HEAD
                 }).ToList();
                 return Ok(new
                 {
@@ -87,6 +106,16 @@ namespace QLKS.Controllers
             }
         }
 
+=======
+                });
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi khi tìm kiếm: " + ex.Message });
+            }
+        }
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         [Authorize(Roles = "QuanLy")]
         [HttpPost]
         public async Task<IActionResult> AddAccount([FromBody] Account model)
@@ -105,15 +134,20 @@ namespace QLKS.Controllers
                 };
 
                 var addedAccount = await _repository.AddAccount(nhanVien);
+<<<<<<< HEAD
                 return Ok(new
                 {
                     message = "Thêm tài khoản thành công!",
                     data = new { Email = addedAccount.Email }
                 });
+=======
+                return Ok(new { Message = "Thêm tài khoản thành công!", Email = addedAccount.Email });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
             catch (DbUpdateException ex)
             {
                 var innerException = ex.InnerException?.Message ?? ex.Message;
+<<<<<<< HEAD
                 return BadRequest(new
                 {
                     message = "Lỗi khi thêm tài khoản: " + ex.Message,
@@ -130,6 +164,15 @@ namespace QLKS.Controllers
             }
         }
 
+=======
+                return BadRequest(new { Message = "Lỗi khi thêm tài khoản: " + innerException });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = "Lỗi khi thêm tài khoản: " + ex.Message });
+            }
+        }
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         [Authorize(Roles = "QuanLy")]
         [HttpPut("{email}")]
         public async Task<IActionResult> UpdateAccount(string email, [FromBody] UpdateAccountDTO model)
@@ -139,6 +182,7 @@ namespace QLKS.Controllers
                 var success = await _repository.UpdateAccount(email, model);
                 if (!success)
                 {
+<<<<<<< HEAD
                     return NotFound(new
                     {
                         message = "Không tìm thấy tài khoản để cập nhật.",
@@ -164,6 +208,21 @@ namespace QLKS.Controllers
 
         [Authorize(Roles = "QuanLy")]
         [HttpDelete("{email}")]
+=======
+                    return NotFound(new { Message = "Không tìm thấy tài khoản để cập nhật." });
+                }
+
+                return Ok(new { Message = "Cập nhật tài khoản thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = "Lỗi khi cập nhật tài khoản: " + ex.Message });
+            }
+        }
+        [Authorize(Roles = "QuanLy")]
+        [HttpDelete("{email}")]
+        
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
         public async Task<IActionResult> DeleteAccount(string email)
         {
             try
@@ -171,6 +230,7 @@ namespace QLKS.Controllers
                 var success = await _repository.DeleteAccount(email);
                 if (!success)
                 {
+<<<<<<< HEAD
                     return NotFound(new
                     {
                         message = "Không tìm thấy tài khoản hoặc tài khoản đã bị vô hiệu hóa.",
@@ -191,6 +251,16 @@ namespace QLKS.Controllers
                     message = "Lỗi khi vô hiệu hóa tài khoản: " + ex.Message,
                     data = (object)null
                 });
+=======
+                    return NotFound(new { Message = "Không tìm thấy tài khoản hoặc tài khoản đã bị vô hiệu hóa." });
+                }
+
+                return Ok(new { Message = "Vô hiệu hóa tài khoản thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi khi vô hiệu hóa tài khoản: " + ex.Message });
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
             }
         }
 
@@ -203,6 +273,7 @@ namespace QLKS.Controllers
                 var success = await _repository.RestoreAccount(email);
                 if (!success)
                 {
+<<<<<<< HEAD
                     return NotFound(new
                     {
                         message = "Không tìm thấy tài khoản hoặc tài khoản đã hoạt động.",
@@ -227,3 +298,18 @@ namespace QLKS.Controllers
         }
     }
 }
+=======
+                    return NotFound(new { Message = "Không tìm thấy tài khoản hoặc tài khoản đã hoạt động." });
+                }
+
+                return Ok(new { Message = "Khôi phục tài khoản thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi khi khôi phục tài khoản: " + ex.Message });
+            }
+        }
+
+    }
+}
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c

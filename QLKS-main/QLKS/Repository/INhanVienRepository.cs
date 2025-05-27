@@ -225,12 +225,19 @@ namespace QLKS.Repository
 
             var claims = new[]
             {
+<<<<<<< HEAD
                 new Claim(ClaimTypes.NameIdentifier, nhanVien.MaNv.ToString()),
                 new Claim(ClaimTypes.Email, nhanVien.Email),
                 new Claim(ClaimTypes.Role, nhanVien.MaVaiTroNavigation?.TenVaiTro ?? "NhanVien"),
                 new Claim("MaNv", nhanVien.MaNv.ToString()),
                 new Claim("HoTen", nhanVien.HoTen ?? "")
             };
+=======
+        new Claim(ClaimTypes.NameIdentifier, nhanVien.MaNv.ToString()),
+        new Claim(ClaimTypes.Email, nhanVien.Email),
+        new Claim(ClaimTypes.Role, nhanVien.MaVaiTroNavigation?.TenVaiTro ?? "NhanVien")
+    };
+>>>>>>> df739cd28c6e6f45fd775af0122f6c41a50ab98c
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
